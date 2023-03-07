@@ -1,28 +1,7 @@
 <?php
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-$books = [
-    [
-        "name" => "Do Androids Dream of Electric Sheep",
-        "author" => "Philip K. Dick",
-        "releaseYear" => 1968,
-        "purchaseUrl" => "http://example.com",
-    ],
-    [
-        "name" => "Project Hail Mary",
-        "author" => "Andy Weir",
-        "releaseYear" => 2021,
-        "purchaseUrl" => "http://example.com",
-    ],
-    [
-        "name" => "The Martian",
-        "author" => "Andy Weir",
-        "releaseYear" => 2011,
-        "purchaseUrl" => "http://example.com",
-    ],
-];
 
-$fitleredBooks = array_filter($books, function ($book) {
-    return $book["releaseYear"] >= 1950 && $book["releaseYear"] <= 2020;
-});
+require "functions.php";
 
-require "index.view.php";
+$heading = 'Home';
+
+require "views". DIRECTORY_SEPARATOR ."index.view.php";
