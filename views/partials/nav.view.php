@@ -9,9 +9,9 @@
                             <div class="ml-10 flex items-baseline space-x-4">
                                 <a href="/" class="<?= urlIs("/") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
 
-                                <a href="/about.php" class="<?= urlIs("/about.php") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">About Us</a>
+                                <a href="/about" class="<?= urlIs("/about") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">About Us</a>
 
-                                <a href="/contact.php" class="<?= urlIs("/contact.php") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Contact Us</a>
+                                <a href="/contact" class="<?= urlIs("/contact") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Contact Us</a>
                             </div>
                         </div>
                     </div>
@@ -77,9 +77,9 @@
                 <div class="space-y-1 px-2 pt-2 pb-3 sm:px-3">
                     <a href="/" class="<?= urlIs("/") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
 
-                    <a href="/about.php" class="<?= urlIs("/about.php") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">About Us</a>
+                    <a href="/about" class="<?= urlIs("/about") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">About Us</a>
 
-                    <a href="/contact.php" class="<?= urlIs("/contact.php") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">About Us</a>
+                    <a href="/contact" class="<?= urlIs("/contact") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">About Us</a>
                 </div>
                 <div class="border-t border-gray-700 pt-4 pb-3">
                     <div class="flex items-center px-5">

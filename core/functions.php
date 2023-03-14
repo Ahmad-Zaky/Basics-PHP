@@ -72,7 +72,40 @@ if (! function_exists('dump')) {
 if (! function_exists('urlIs')) {
     function urlIs($value='')
     {
-        return $_SERVER["REQUEST_URI"] == $value;
+        return $_SERVER["REQUEST_URI"] === $value;
+    }
+}
+
+/**
+ * abort function
+ *
+ * @param [type] $code
+ * @return void
+ */
+if (! function_exists('abort')) {
+    function abort(int $code = 404)
+    {
+        http_response_code($code);
+
+        require errorsPath() . "{$code}.view.php";
+
+        die;
+    }
+}
+
+/**
+ * route function
+ *
+ * @param array $routes
+ * @param string $uri
+ * @return void
+ */
+if (! function_exists('route')) {
+    function route(array $routes, string $uri = "/")
+    {
+        if (array_key_exists($uri, $routes)) {
+            require controllersPath() . $routes[$uri] .".php";
+        } else abort();
     }
 }
 
@@ -88,7 +121,6 @@ if (! function_exists('partialsPath')) {
     }
 }
 
-
 /**
  * viewsPath function
  *
@@ -98,5 +130,29 @@ if (! function_exists('viewsPath')) {
     function viewsPath()
     {
         return "views". DIRECTORY_SEPARATOR;
+    }
+}
+
+/**
+ * controllersPath function
+ *
+ * @return string
+ */
+if (! function_exists('controllersPath')) {
+    function controllersPath()
+    {
+        return "controllers". DIRECTORY_SEPARATOR;
+    }
+}
+
+/**
+ * errorsPath function
+ *
+ * @return string
+ */
+if (! function_exists('errorsPath')) {
+    function errorsPath()
+    {
+        return "views". DIRECTORY_SEPARATOR ."errors". DIRECTORY_SEPARATOR;
     }
 }

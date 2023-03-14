@@ -1,7 +1,11 @@
 <?php
 
-require "functions.php";
+$config = require "core". DIRECTORY_SEPARATOR ."config.php";
 
-$heading = 'Home';
+require "core". DIRECTORY_SEPARATOR ."functions.php";
 
-require "views". DIRECTORY_SEPARATOR ."index.view.php";
+require "core". DIRECTORY_SEPARATOR ."DB.php";
+
+require "core". DIRECTORY_SEPARATOR ."router.php";
+
+
