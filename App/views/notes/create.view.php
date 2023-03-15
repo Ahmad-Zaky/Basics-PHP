@@ -1,4 +1,4 @@
-<?php view("partials.head"); ?>
+<?php view("partials.head", ["heading" => $heading]); ?>
 <?php view("partials.nav"); ?>
 <?php view("partials.banner", ["heading" => $heading]); ?>
 
@@ -8,7 +8,7 @@
             <a href="/notes" class="text-blue-500 underline">Go Back ...</a>
         </p>
 
-        <form action="/notes/store" method="POST">
+        <form action="/notes" method="POST">
             <div class="shadow sm:overflow-hidden sm:rounded-md">
                 <div class="space-y-6 bg-white px-4 py-5 sm:p-6">
 

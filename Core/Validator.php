@@ -1,5 +1,7 @@
 <?php
 
+namespace Core;
+
 class Validator
 {
     protected static $rules;
@@ -128,7 +130,7 @@ class Validator
     protected static function messages($rule)
     {
         if (empty(self::$messages)) {
-            self::$messages = require "core". DIRECTORY_SEPARATOR ."error_messages.php";
+            self::$messages = require "Core". DIRECTORY_SEPARATOR ."error_messages.php";
         }
 
         return self::$messages[$rule];

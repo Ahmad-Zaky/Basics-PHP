@@ -1,5 +1,7 @@
 <?php
 
+namespace Core;
+
 class Response
 {
     const HTTP_CONTINUE = 100;
@@ -49,4 +51,17 @@ class Response
     const HTTP_LOCKED = 423;                                                      // RFC4918
     const HTTP_FAILED_DEPENDENCY = 424;                                           // RFC4918
 
+    public static function redirect($route) 
+    {   
+        header("Location: {$route}");
+
+        exit();
+    }
+
+    public static function back() 
+    {
+        header("Location: {$_SERVER['HTTP_REFERER']}");
+
+        exit();
+    }
 }

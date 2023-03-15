@@ -1,5 +1,10 @@
 <?php
 
+namespace Core;
+
+use PDO;
+use Core\Response;
+
 class DB
 {
     protected $dsn;
@@ -45,7 +50,3 @@ class DB
         return $item;
     }
 }
-
-global $config;
-
-$db = new DB($config["db"]);

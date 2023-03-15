@@ -1,5 +1,26 @@
 <?php
 
+use Core\DB;
+use Core\Response;
+use Core\Router;
+use Core\Validator;
+
+/**
+ * autoload function
+ *
+ * @return void
+ */
+if (! function_exists("autoload")) {
+    function autoload()
+    {
+        spl_autoload_register(function ($class) {
+            $class = str_replace('\\', DIRECTORY_SEPARATOR, $class);
+        
+            require basePath("{$class}.php");
+        });
+    }
+}
+
 /**
  * init function
  *
@@ -11,7 +32,27 @@ if (! function_exists("init")) {
         setRequest();
         setErrors();
         setOld();
+        config();
         auth();
+
+
+        Router::route();
+    }
+}
+
+/**
+ * config function
+ *
+ * @return void
+ */
+if (! function_exists("config")) {
+    function config()
+    {
+        global $config;
+        
+        return ($config)
+            ? $config
+            : $config = require appPath("config.php");
     }
 }
 
@@ -23,9 +64,13 @@ if (! function_exists("init")) {
 if (! function_exists("auth")) {
     function auth()
     {
-        global $db, $auth;
-
-        return $auth = $db->query("SELECT * FROM users WHERE id = :id", ["id" => 1])->findOrFail();
+        global $auth, $config;
+        
+        $db = new DB($config["db"]);
+        
+        return ($auth)
+            ? $auth
+            : ($auth = $db->query("SELECT * FROM users WHERE id = :id", ["id" => 1])->findOrFail());
     }
 }
 
@@ -54,7 +99,7 @@ if (! function_exists("request")) {
         global $request;
 
         if ($key) {
-            isset($request[$key]) ? $request[$key] : NULL;
+            return isset($request[$key]) ? $request[$key] : NULL;
         }
 
         return $request;
@@ -271,7 +316,7 @@ if (! function_exists('basePath')) {
 if (! function_exists('corePath')) {
     function corePath($path = "")
     {
-        return basePath("core". DIRECTORY_SEPARATOR . $path);
+        return basePath("Core". DIRECTORY_SEPARATOR . $path);
     }
 }
 
@@ -283,7 +328,7 @@ if (! function_exists('corePath')) {
 if (! function_exists('appPath')) {
     function appPath($path = "")
     {
-        return basePath("app". DIRECTORY_SEPARATOR . $path);
+        return basePath("App". DIRECTORY_SEPARATOR . $path);
     }
 }
 
@@ -358,9 +403,7 @@ if (! function_exists('authorize')) {
 if (! function_exists('redirect')) {
     function redirect($route = "/")
     {
-        header("Location: /notes");
-        
-        exit();
+        Response::redirect($route);
     }
 }
 
@@ -372,9 +415,7 @@ if (! function_exists('redirect')) {
 if (! function_exists('back')) {
     function back()
     {
-        header("Location: {$_SERVER['HTTP_REFERER']}");
-
-        exit();
+        Response::back();
     }
 }
 
