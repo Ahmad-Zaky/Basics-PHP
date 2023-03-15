@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Notes;
 
+use Core\App;
 use Core\Validator;
 use Core\DB;
 
@@ -12,7 +13,7 @@ if (
 ) {
     global $auth, $config;
 
-    $db = new DB($config["db"]);
+    $db = app(DB::class);
 
     $data = Validator::validated();
     

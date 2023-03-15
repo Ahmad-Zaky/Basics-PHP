@@ -1,5 +1,7 @@
 <?php
 
+use Core\App;
+use Core\Container;
 use Core\DB;
 use Core\Response;
 use Core\Router;
@@ -33,8 +35,8 @@ if (! function_exists("init")) {
         setErrors();
         setOld();
         config();
+        registerServices();
         auth();
-
 
         Router::route();
     }
@@ -46,13 +48,17 @@ if (! function_exists("init")) {
  * @return void
  */
 if (! function_exists("config")) {
-    function config()
+    function config($key = "")
     {
         global $config;
         
-        return ($config)
-            ? $config
-            : $config = require appPath("config.php");
+        if (empty($config)) $config = require appPath("config.php");
+
+        if ($key) {
+            return isset($config[$key]) ? $config[$key] : NULL;
+        }
+
+        return $config;
     }
 }
 
@@ -64,9 +70,9 @@ if (! function_exists("config")) {
 if (! function_exists("auth")) {
     function auth()
     {
-        global $auth, $config;
+        global $auth;
         
-        $db = new DB($config["db"]);
+        $db = app(DB::class);
         
         return ($auth)
             ? $auth
@@ -107,20 +113,37 @@ if (! function_exists("request")) {
 }
 
 /**
- * config function
+ * registerServices function
  *
  * @return void
  */
-if (! function_exists("config")) {
-    function config($key = "")
+if (! function_exists("registerServices")) {
+    function registerServices() 
     {
-        global $config;
+        $container = new Container;
 
+        // Register DB object
+        $container->bind(DB::class, function () {
+            return new DB(config("db"));
+        });
+
+        App::setContainer($container);
+    }
+}
+
+/**
+ * app function
+ *
+ * @return void
+ */
+if (! function_exists("app")) {
+    function app($key = "")
+    {
         if ($key) {
-            isset($config[$key]) ? $config[$key] : NULL;
+            return App::resolve($key);
         }
 
-        return $config;
+        return App::container();
     }
 }
 

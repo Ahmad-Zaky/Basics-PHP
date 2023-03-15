@@ -2,11 +2,12 @@
 
 namespace App\Controllers\Notes;
 
+use Core\App;
 use Core\DB;
 
 global $auth, $config;
 
-$db = new DB($config["db"]);
+$db = app(DB::class);
 
 $note = $db->query("SELECT * FROM notes WHERE id = :id", ["id" => request("id")])->findOrFail();
 
