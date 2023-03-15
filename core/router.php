@@ -1,11 +1,7 @@
 <?php
 
-$uri = parse_url($_SERVER["REQUEST_URI"])["path"];
+$routes = require "core". DIRECTORY_SEPARATOR ."routes.php";
 
-$routes = [
-    "/" => "home",
-    "/contact" => "contact",
-    "/about" => "about",
-];
+$uri = parse_url($_SERVER["REQUEST_URI"])["path"];
 
 route($routes, $uri);

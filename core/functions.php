@@ -1,6 +1,112 @@
 <?php
 
 /**
+ * init function
+ *
+ * @return void
+ */
+if (! function_exists("init")) {
+    function init()
+    {
+        setRequest();
+        setErrors();
+        setOld();
+    }
+}
+
+/**
+ * setRequest function
+ *
+ * @return void
+ */
+if (! function_exists("setRequest")) {
+    function setRequest()
+    {
+        global $request;
+
+        $request = $_REQUEST;
+    }
+}
+
+/**
+ * request function
+ *
+ * @return void
+ */
+if (! function_exists("request")) {
+    function request($key = "")
+    {
+        global $request;
+
+        if ($key) {
+            isset($request[$key]) ? $request[$key] : NULL;
+        }
+
+        return $request;
+    }
+}
+
+/**
+ * setErrors function
+ *
+ * @return void
+ */
+if (! function_exists("setErrors")) {
+    function setErrors()
+    {        
+        if (isset($_SESSION["errors"])) {
+            global $errors;
+
+            $errors = $_SESSION["errors"];
+        
+            unset($_SESSION['errors']);
+        }
+    }
+}
+
+/**
+ * setOld function
+ *
+ * @return void
+ */
+if (! function_exists("setOld")) {
+    function setOld()
+    {
+        if (in_array($_SERVER["REQUEST_METHOD"], ["POST", "PUT", "PATCH"])) {
+            if (! isset($_POST)) return;
+    
+            $_SESSION['old'] = $_POST;
+
+            return;
+        }
+
+        global $old;
+        
+        $old = $_SESSION['old'];
+
+        unset($_SESSION['old']);
+    }
+}
+
+/**
+ * old function
+ *
+ * @return void
+ */
+if (! function_exists("old")) {
+    function old($key, $default = "")
+    {
+        global $old;
+
+        if (isset($old[$key])) {
+            return $old[$key];
+        }
+
+        return $default;
+    }
+}
+
+/**
  * showErrors function
  *
  * @return void
@@ -104,7 +210,7 @@ if (! function_exists('route')) {
     function route(array $routes, string $uri = "/")
     {
         if (array_key_exists($uri, $routes)) {
-            require controllersPath() . $routes[$uri] .".php";
+            require controllersPath() . str_replace(".", DIRECTORY_SEPARATOR, $routes[$uri]) .".php";
         } else abort();
     }
 }
@@ -154,5 +260,106 @@ if (! function_exists('errorsPath')) {
     function errorsPath()
     {
         return "views". DIRECTORY_SEPARATOR ."errors". DIRECTORY_SEPARATOR;
+    }
+}
+
+
+/**
+ * authorize function
+ * @param bool $condition
+ * @param int $status
+ *
+ * @return void
+ */
+if (! function_exists('authorize')) {
+    function authorize($condition, $status = Response::HTTP_FORBIDDEN)
+    {
+        if (! $condition) abort($status);
+    }
+}
+
+/**
+ * redirect function
+ * @param string $route
+ *
+ * @return void
+ */
+if (! function_exists('redirect')) {
+    function redirect($route = "/")
+    {
+        header("Location: /notes");
+        
+        exit();
+    }
+}
+
+/**
+ * back function
+ *
+ * @return void
+ */
+if (! function_exists('back')) {
+    function back()
+    {
+        header("Location: {$_SERVER['HTTP_REFERER']}");
+
+        exit();
+    }
+}
+
+/**
+ * errors function
+ * @param string $key
+ *
+ * @return string
+ */
+if (! function_exists('errors')) {
+    function errors($key = "")
+    {   
+        global $errors;
+
+        return array_key_exists($key, $errors) ? $errors[$key] : [];
+    }
+}
+
+/**
+ * hasErrors function
+ * @param string $key
+ *
+ * @return string
+ */
+if (! function_exists('hasErrors')) {
+    function hasErrors($key = "")
+    {
+        global $errors;
+
+        return array_key_exists($key, $errors);
+    }
+}
+
+/**
+ * validate function
+ * @param string $rule
+ * @param string $value
+ *
+ * @return string
+ */
+if (! function_exists('validate')) {
+    function validate($rules)
+    {
+        return Validator::validate($rules);
+    }
+}
+
+/**
+ * sanitize function
+ * @param string $text
+ *
+ * @return string
+ */
+if (! function_exists('sanitize')) {
+    function sanitize($text = "")
+    {
+        return htmlspecialchars($text);
     }
 }

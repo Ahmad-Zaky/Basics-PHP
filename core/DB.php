@@ -1,13 +1,13 @@
 <?php
 
-
 class DB
 {
-
     protected $dsn;
     
     protected $connection;
     
+    protected $statement;
+
     public function __construct($config)
     {
         $this->dsn = "mysql:". http_build_query($config, "", ";");
@@ -19,16 +19,31 @@ class DB
 
     public function query($query, $params = []) 
     {
-        $statement = $this->connection->prepare($query);
+        $this->statement = $this->connection->prepare($query);
         
-        $statement->execute($params);
+        $this->statement->execute($params);
         
-        return $statement;
+        return $this;
+    }
+
+    public function get() 
+    {
+        return $this->statement->fetchAll();
+    }
+
+    public function find() 
+    {
+        return $this->statement->fetch();
+    }
+
+    public function findOrFail() 
+    {
+        if (! $item = $this->find()) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
+
+        return $item;
     }
 }
 
 $db = new DB($config["db"]);
-
-// Testing
-// $posts = $db->query("SELECT * FROM posts")->fetchAll();
-// dd($posts);
