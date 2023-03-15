@@ -1,5 +1,5 @@
-<?php require partialsPath() . "head.view.php"; ?>
-<?php require partialsPath() . "nav.view.php"; ?>
+<?php view("partials.head"); ?>
+<?php view("partials.nav"); ?>
 
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
@@ -11,4 +11,4 @@
     </div>
 </main>
 
-<?php require partialsPath() . "footer.view.php"; ?>
+<?php view("partials.footer"); ?>

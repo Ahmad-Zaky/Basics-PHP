@@ -12,7 +12,7 @@ class DB
     {
         $this->dsn = "mysql:". http_build_query($config, "", ";");
 
-        $this->connection = new PDO($this->dsn, $config["username"], $config["password"], [
+        $this->connection = new PDO($this->dsn, $config["user"], $config["password"], [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
     }
@@ -45,5 +45,7 @@ class DB
         return $item;
     }
 }
+
+global $config;
 
 $db = new DB($config["db"]);

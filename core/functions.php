@@ -11,6 +11,21 @@ if (! function_exists("init")) {
         setRequest();
         setErrors();
         setOld();
+        auth();
+    }
+}
+
+/**
+ * auth function
+ *
+ * @return void
+ */
+if (! function_exists("auth")) {
+    function auth()
+    {
+        global $db, $auth;
+
+        return $auth = $db->query("SELECT * FROM users WHERE id = :id", ["id" => 1])->findOrFail();
     }
 }
 
@@ -43,6 +58,24 @@ if (! function_exists("request")) {
         }
 
         return $request;
+    }
+}
+
+/**
+ * config function
+ *
+ * @return void
+ */
+if (! function_exists("config")) {
+    function config($key = "")
+    {
+        global $config;
+
+        if ($key) {
+            isset($config[$key]) ? $config[$key] : NULL;
+        }
+
+        return $config;
     }
 }
 
@@ -80,11 +113,13 @@ if (! function_exists("setOld")) {
             return;
         }
 
-        global $old;
-        
-        $old = $_SESSION['old'];
-
-        unset($_SESSION['old']);
+        if (isset($_SESSION['old'])) {
+            global $old;
+            
+            $old = $_SESSION['old'];
+    
+            unset($_SESSION['old']);
+        }
     }
 }
 
@@ -193,49 +228,62 @@ if (! function_exists('abort')) {
     {
         http_response_code($code);
 
-        require errorsPath() . "{$code}.view.php";
+        require view("errors.{$code}");
 
-        die;
+        exit;
     }
 }
 
 /**
- * route function
- *
- * @param array $routes
- * @param string $uri
- * @return void
- */
-if (! function_exists('route')) {
-    function route(array $routes, string $uri = "/")
-    {
-        if (array_key_exists($uri, $routes)) {
-            require controllersPath() . str_replace(".", DIRECTORY_SEPARATOR, $routes[$uri]) .".php";
-        } else abort();
-    }
-}
-
-/**
- * partialsPath function
+ * view function
  *
  * @return string
  */
-if (! function_exists('partialsPath')) {
-    function partialsPath()
+if (! function_exists('view')) {
+    function view($path = "", $attributes = [])
     {
-        return "views". DIRECTORY_SEPARATOR ."partials". DIRECTORY_SEPARATOR;
+        extract($attributes);
+
+        $path = str_replace(".", DIRECTORY_SEPARATOR, $path) .".view.php";
+
+        require appPath("views". DIRECTORY_SEPARATOR . $path);
+    }
+}
+
+
+/**
+ * basePath function
+ *
+ * @return string
+ */
+if (! function_exists('basePath')) {
+    function basePath($path = "")
+    {
+        return BASE_PATH . $path;
     }
 }
 
 /**
- * viewsPath function
+ * corePath function
  *
  * @return string
  */
-if (! function_exists('viewsPath')) {
-    function viewsPath()
+if (! function_exists('corePath')) {
+    function corePath($path = "")
     {
-        return "views". DIRECTORY_SEPARATOR;
+        return basePath("core". DIRECTORY_SEPARATOR . $path);
+    }
+}
+
+/**
+ * appPath function
+ *
+ * @return string
+ */
+if (! function_exists('appPath')) {
+    function appPath($path = "")
+    {
+        return basePath("app". DIRECTORY_SEPARATOR . $path);
     }
 }
 
@@ -245,9 +293,33 @@ if (! function_exists('viewsPath')) {
  * @return string
  */
 if (! function_exists('controllersPath')) {
-    function controllersPath()
+    function controllersPath($path = "")
     {
-        return "controllers". DIRECTORY_SEPARATOR;
+        return appPath("controllers". DIRECTORY_SEPARATOR . $path);
+    }
+}
+
+/**
+ * viewsPath function
+ *
+ * @return string
+ */
+if (! function_exists('viewsPath')) {
+    function viewsPath($path = "")
+    {
+        return appPath("views". DIRECTORY_SEPARATOR . $path);
+    }
+}
+
+/**
+ * partialsPath function
+ *
+ * @return string
+ */
+if (! function_exists('partialsPath')) {
+    function partialsPath($path = "")
+    {
+        return viewsPath("partials". DIRECTORY_SEPARATOR . $path);
     }
 }
 
@@ -257,12 +329,11 @@ if (! function_exists('controllersPath')) {
  * @return string
  */
 if (! function_exists('errorsPath')) {
-    function errorsPath()
+    function errorsPath($path = "")
     {
-        return "views". DIRECTORY_SEPARATOR ."errors". DIRECTORY_SEPARATOR;
+        return viewsPath("errors". DIRECTORY_SEPARATOR . $path);
     }
 }
-
 
 /**
  * authorize function

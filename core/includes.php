@@ -1,19 +1,20 @@
 <?php
 
-$config = require "core". DIRECTORY_SEPARATOR ."config.php";
+require BASE_PATH . "core". DIRECTORY_SEPARATOR ."globals.php";
 
-require "core". DIRECTORY_SEPARATOR ."globals.php";
+require BASE_PATH . "app". DIRECTORY_SEPARATOR ."config.php";
 
-require "core". DIRECTORY_SEPARATOR ."Response.php";
+require BASE_PATH . "core". DIRECTORY_SEPARATOR ."functions.php";
 
-require "core". DIRECTORY_SEPARATOR ."Validator.php";
+require corePath("DB.php");
 
-require "core". DIRECTORY_SEPARATOR ."DB.php";
+require corePath("init.php");
 
-require "core". DIRECTORY_SEPARATOR ."auth.php";
+require corePath("Response.php");
 
-require "core". DIRECTORY_SEPARATOR ."functions.php";
+require corePath("Validator.php");
 
-require "core". DIRECTORY_SEPARATOR ."init.php";
+require corePath("Router.php");
 
-require "core". DIRECTORY_SEPARATOR ."router.php";
+
+
