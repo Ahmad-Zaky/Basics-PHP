@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use Core\Middlewares\Middleware;
 use Core\Response;
 
 class Router
@@ -12,48 +13,54 @@ class Router
 
     public static function GET($uri, $controller)
     {
-        self::register($uri, $controller, __FUNCTION__);
+        return self::register($uri, $controller, __FUNCTION__);
     }
 
     public static function POST($uri, $controller)
     {
-        self::register($uri, $controller, __FUNCTION__);
+        return self::register($uri, $controller, __FUNCTION__);
     }
-
 
     public static function PUT($uri, $controller)
     {
-        self::register($uri, $controller, __FUNCTION__);
+        return self::register($uri, $controller, __FUNCTION__);
     }
 
     public static function PATCH($uri, $controller)
     {
-        self::register($uri, $controller, __FUNCTION__);
+        return self::register($uri, $controller, __FUNCTION__);
     }
 
     public static function DELETE($uri, $controller)
     {
-        self::register($uri, $controller, __FUNCTION__);
+        return self::register($uri, $controller, __FUNCTION__);
     }
 
     public static function route()
     {
-        if ($route = self::find()) {
-            require controllersPath(
-                str_replace(
-                    ".",
-                    DIRECTORY_SEPARATOR,
-                    $route["controller"]
-                ) .".php"
-            );
-        } else abort(Response::HTTP_NOT_FOUND);
+        if (! $route = self::find()) {
+            abort(Response::HTTP_NOT_FOUND);
+        }
+        
+        Middleware::resolve($route["middleware"]);
+
+        require controllersPath(str_replace(".", DIRECTORY_SEPARATOR, $route["controller"]) .".php");
     }
 
-    protected static function register($uri, $controller, $method)
+    protected static function register($uri, $controller, $method, $middleware = NULL)
     {
-        self::$routes["{$uri}.{$method}"] = compact("uri", "controller", "method");
+        self::$routes["{$uri}.{$method}"] = compact("uri", "controller", "method", "middleware");
+        
+        return new self;
     }
 
+    public function only($middleware) 
+    {
+        self::$routes[array_key_last(self::$routes)]["middleware"] = $middleware;
+
+        return $this;
+    }
+    
     protected static function find() 
     {
         $found = array_key_exists(self::getUri() .".". self::getMethod(), self::getRoutes());

@@ -18,17 +18,18 @@
 
                                 <a href="/contact" class="<?= urlIs("/contact") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Contact Us</a>
 
-                                <?php if (! auth()): ?>
-                                    <a href="/signin" class="<?= urlIs("/signin") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Sign In</a>
-        
-                                    <a href="/signup" class="<?= urlIs("/signup") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Sign Up</a>
-                                <?php endif; ?>
-
                             </div>
                         </div>
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-4 flex items-center md:ml-6">
+
+                            <?php if (! auth()): ?>
+                                <a href="/signin" class="<?= urlIs("/signin") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Sign In</a>
+    
+                                <a href="/signup" class="<?= urlIs("/signup") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Sign Up</a>
+                            <?php endif; ?>
+
                             <?php if (auth()): ?>
                                 <button type="button" class="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                                     <span class="sr-only">View notifications</span>
@@ -92,9 +93,6 @@
 
                     <a href="/contact" class="<?= urlIs("/contact") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">About Us</a>
 
-                    <a href="#" class="<?= urlIs("/login") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Sign In</a>
-
-                    <a href="/signup" class="<?= urlIs("/signup") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Sign Up</a>
                 </div>
                 <div class="border-t border-gray-700 pt-4 pb-3">
                     <div class="flex items-center px-5">

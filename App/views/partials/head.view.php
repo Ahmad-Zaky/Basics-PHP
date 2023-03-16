@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Basics - <?= $heading ?></title>
-    <!-- <script src="/assets/libs/tailwind/3.2.6/script.js"></script> -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+
+    <!-- <script sync src="https://cdn.tailwindcss.com?plugins=forms"></script> -->
+    <!-- <script sync src="/assets/libs/tailwind/3.2.6/scripts.js"></script> -->
+    <script sync src="/assets/libs/tailwind/3.2.6/plugins/forms/scripts.js"></script>
+
     <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 
 <body class="h-full">
     <div class="min-h-full">
-        
