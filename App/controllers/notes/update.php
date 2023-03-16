@@ -11,11 +11,15 @@ $rules = [
 
 if (validate($rules)) {
     $data = Validator::validated();
-
+    
     $db = app(DB::class);
 
-    $db->query("INSERT INTO notes(body, user_id) VALUES(:body, :user_id)", [
-        "user_id" => auth("id"),
+    $note = $db->query("SELECT * FROM notes WHERE id = :id", ["id" => request("id")])->findOrFail();
+
+    authorize($note["user_id"] === auth("id"));
+
+    $db->query("UPDATE notes SET body =:body WHERE id = :id", [
+        "id" => request("id"),
         "body" => $data["body"],
     ]);
 }

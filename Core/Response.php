@@ -51,15 +51,19 @@ class Response
     const HTTP_LOCKED = 423;                                                      // RFC4918
     const HTTP_FAILED_DEPENDENCY = 424;                                           // RFC4918
 
-    public static function redirect($route) 
-    {   
+    public static function redirect($route, $session = []) 
+    {
+        foreach ($session as $key => $value) $_SESSION[$key] = $value;
+
         header("Location: {$route}");
 
         exit();
     }
 
-    public static function back() 
+    public static function back($session = [])
     {
+        foreach ($session as $key => $value) $_SESSION[$key] = $value;
+
         header("Location: {$_SERVER['HTTP_REFERER']}");
 
         exit();

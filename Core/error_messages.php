@@ -6,4 +6,7 @@ return [
     "min" => ":key is less than the min :min",
     "email" => "Invalid email",
     "url" => "Invalid url",
+    "exists" => ":key Not Found",
+    "unique" => ":key already exists",
+    "confirmed" => ":key1 doesn't match with :key2",
 ];

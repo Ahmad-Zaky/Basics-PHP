@@ -2,7 +2,6 @@
 
 namespace App\Controllers\Notes;
 
-use Core\App;
 use Core\DB;
 
 global $config;
@@ -10,7 +9,7 @@ global $config;
 $db = app(DB::class);
 
 $notes = $db->query("SELECT * FROM notes WHERE user_id = :user_id", [
-    "user_id" => 1
+    "user_id" => auth("id")
 ])->get();
 
 view("notes.index", [

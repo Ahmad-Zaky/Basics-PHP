@@ -63,20 +63,61 @@ if (! function_exists("config")) {
 }
 
 /**
+ * signin function
+ *
+ * @return void
+ */
+if (! function_exists("signin")) {
+    function signin($user = "")
+    {
+        $_SESSION["user"] = [
+            "name" => $user["name"],
+            "email" => $user["email"]
+        ];
+
+        session_regenerate_id();
+    }
+}
+
+/**
+ * signout function
+ *
+ * @return void
+ */
+if (! function_exists("signout")) {
+    function signout()
+    {
+        $_SESSION = [];
+        session_destroy();
+
+        $params = session_get_cookie_params();
+        setcookie("PHPSESSID", "", time() - 3600, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+    }
+}
+
+/**
  * auth function
  *
  * @return void
  */
 if (! function_exists("auth")) {
-    function auth()
+    function auth($key = "")
     {
         global $auth;
         
-        $db = app(DB::class);
-        
-        return ($auth)
-            ? $auth
-            : ($auth = $db->query("SELECT * FROM users WHERE id = :id", ["id" => 1])->findOrFail());
+        if (empty($auth)) {
+            $db = app(DB::class);
+
+            $auth = ($email = session("user")["email"] ?? NULL)
+                ? $db->query("SELECT * FROM users WHERE email = :email", ["email" => $email])->findOrFail()
+                : NULL;
+        }
+
+        if ($key) {
+            return isset($auth[$key]) ? $auth[$key] : NULL;
+        }
+
+        return $auth;
     }
 }
 
@@ -109,6 +150,22 @@ if (! function_exists("request")) {
         }
 
         return $request;
+    }
+}
+
+/**
+ * session function
+ *
+ * @return void
+ */
+if (! function_exists("session")) {
+    function session($key = "")
+    {
+        if ($key) {
+            return isset($_SESSION[$key]) ? $_SESSION[$key] : NULL;
+        }
+
+        return $_SESSION;
     }
 }
 
@@ -424,9 +481,9 @@ if (! function_exists('authorize')) {
  * @return void
  */
 if (! function_exists('redirect')) {
-    function redirect($route = "/")
+    function redirect($route = "/", $session = [])
     {
-        Response::redirect($route);
+        Response::redirect($route, $session);
     }
 }
 
@@ -436,9 +493,9 @@ if (! function_exists('redirect')) {
  * @return void
  */
 if (! function_exists('back')) {
-    function back()
+    function back($session = [])
     {
-        Response::back();
+        Response::back($session);
     }
 }
 
@@ -496,5 +553,33 @@ if (! function_exists('sanitize')) {
     function sanitize($text = "")
     {
         return htmlspecialchars($text);
+    }
+}
+
+/**
+ * bcrypt function
+ * @param string $text
+ * @param array $options
+ *
+ * @return string
+ */
+if (! function_exists('bcrypt')) {
+    function bcrypt($text, $options = ["cost" => 12])
+    {
+        return password_hash($text, PASSWORD_BCRYPT, $options);
+    }
+}
+
+/**
+ * verifyHash function
+ * @param string $text
+ * @param string $hash
+ *
+ * @return bool
+ */
+if (! function_exists('verifyHash')) {
+    function verifyHash($text, $hash)
+    {
+        return password_verify($text, $hash);
     }
 }

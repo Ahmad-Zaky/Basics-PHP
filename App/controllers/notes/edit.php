@@ -10,7 +10,7 @@ $note = $db->query("SELECT * FROM notes WHERE id = :id", ["id" => request("id")]
 
 authorize($note["user_id"] === auth("id"));
 
-view("notes.show", [
-    "heading" => 'Note',
+view("notes.edit", [
+    "heading" => 'Edit Note',
     "note" => $note
 ]);

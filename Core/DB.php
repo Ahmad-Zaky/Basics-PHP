@@ -12,6 +12,10 @@ class DB
     protected $connection;
     
     protected $statement;
+    
+    protected $tables;
+    
+    protected $columns;
 
     public function __construct($config)
     {
@@ -48,5 +52,37 @@ class DB
         }
 
         return $item;
+    }
+
+    public function tables() 
+    {
+        foreach ($this->query("SHOW TABLES")->get() as $table) {
+            $this->tables[array_values($table)[0]] = $table;
+        }
+        
+        return $this->tables;
+    }
+
+    public function tableExists($table)
+    {
+        if (empty($this->tables)) $this->tables();
+
+        return isset($this->tables[$table]);
+    }
+
+    public function columns($table) 
+    {
+        foreach ($this->query("DESCRIBE {$table};")->get() as $column) {
+            $this->columns[$table][$column["Field"]] = $column;
+        }
+        
+        return $this->columns;
+    }
+
+    public function columnExists($table, $column)
+    {
+        if (empty(isset($this->columns[$table]))) $this->columns($table);
+
+        return isset($this->columns[$table][$column]);
     }
 }

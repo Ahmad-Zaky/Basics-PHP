@@ -47,14 +47,14 @@ class Validator
     {
         return [
             'required' => static function ($rule, $key, $value) {
-                if (self::required($value)) return true;                
+                if (self::required($value)) return true;
     
                 self::addError($rule, $key, [":key" => $key]);
                 
                 return false;
             },
     
-            'max' => static function ($rule, $key, $value, $option = NULL) {
+            'max' => static function ($rule, $key, $value, $option) {
     
                 if (self::max($value, $option)) return true;                
                 
@@ -63,7 +63,7 @@ class Validator
                 return false;
             },
     
-            'min' => static function ($rule, $key, $value, $option = NULL) {
+            'min' => static function ($rule, $key, $value, $option) {
     
                 if (self::min($value, $option)) return true;                
                 
@@ -72,7 +72,7 @@ class Validator
                 return false;
             },
     
-            'email' => static function ($rule, $key, $value = NULL) {
+            'email' => static function ($rule, $key, $value) {
     
                 if (self::email($value)) return true;                
     
@@ -81,12 +81,39 @@ class Validator
                 return false;
             },
     
-            'url' => static function ($rule, $key, $value = NULL) {
+            'url' => static function ($rule, $key, $value) {
     
                 if (self::url($value)) return true;                
                 
                 self::addError($rule, $key);
                 
+                return false;
+            },
+
+            'exists' => static function ($rule, $key, $value, $option) {
+    
+                if (self::exists($value, $option)) return true;                
+                
+                self::addError($rule, $key, [":key" => $key]);
+                
+                return false;
+            },
+
+            'unique' => static function ($rule, $key, $value, $option) {
+    
+                if (self::unique($value, $option)) return true;                
+                
+                self::addError($rule, $key, [":key" => $key]);
+                
+                return false;
+            },
+
+            'confirmed' => static function ($rule, $key, $value) {
+    
+                if (self::confirmed($key, $value)) return true;                
+                
+                self::addError($rule, $key, [":key1" => "{$key}_confirmation", ":key2" => $key]);
+                                
                 return false;
             },
         ];
@@ -117,6 +144,53 @@ class Validator
         return filter_var(trim($value) ?? "", FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
     }
 
+    public static function exists($value, $option)
+    {
+        $table = explode(",", $option)[0];
+        $column = explode(",", $option)[1] ?? "id";
+
+        $db = app(DB::class);
+        if (! $db->tableExists($table) || ! $db->columnExists($table, $column)) {
+            return false;
+        }
+
+        $item = $db->query("SELECT {$column} FROM {$table} WHERE {$column} = ':value'", [
+            "value" => $value,
+        ])->find();
+
+        return $item !== false;
+    }
+
+    public static function unique($value, $option)
+    {
+        $table = explode(",", $option)[0];
+        $column = explode(",", $option)[1] ?? "id";
+        $except = explode(",", $option)[2] ?? NULL;
+
+        $db = app(DB::class);
+        if (! $db->tableExists($table) || ! $db->columnExists($table, $column)) {
+            return false;
+        }
+
+        $params = ["value" => trim($value)];
+        
+        $q = "SELECT {$column} FROM {$table} WHERE {$column} = :value";
+        if ($except) {
+            $params["except"] = trim($except);
+            $q .= " AND {$column} != :except";
+        }
+
+        $item = $db->query($q, $params)->find();
+
+        return $item === false;
+    }
+
+    public static function confirmed($key, $value)
+    {
+        return request("{$key}_confirmation") === $value;
+    }
+
+
     public static function validated()
     {
         return self::$validated;
@@ -130,7 +204,7 @@ class Validator
     protected static function messages($rule)
     {
         if (empty(self::$messages)) {
-            self::$messages = require "Core". DIRECTORY_SEPARATOR ."error_messages.php";
+            self::$messages = require corePath("error_messages.php");
         }
 
         return self::$messages[$rule];
