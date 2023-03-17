@@ -24,12 +24,12 @@ if (! function_exists("autoload")) {
 }
 
 /**
- * init function
+ * run function
  *
  * @return void
  */
-if (! function_exists("init")) {
-    function init()
+if (! function_exists("run")) {
+    function run()
     {
         setRequest();
         setErrors();
