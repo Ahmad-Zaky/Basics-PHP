@@ -6,8 +6,8 @@ if (toggleUserEl) toggleUserEl.onclick = e => toggleUserMenu(e);
 if (signoutEl && signoutEl.length) signoutEl.forEach( el => el.onclick = e => signout(e));
 
 function toggleUserMenu(e) {
-    showClasses = ["show", "transform", "opacity-100", "scale-100"]
-    hideClasses = ["hide", "transform", "opacity-0", "scale-95"]
+    const showClasses = ["show", "transform", "opacity-100", "scale-100"]
+    const hideClasses = ["hide", "transform", "opacity-0", "scale-95"]
     
     let menu = document.querySelector('[aria-labelledby="user-menu-button"]');
 

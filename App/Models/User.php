@@ -7,7 +7,7 @@ use Core\Model;
 
 class User extends Model
 {
-    protected static $table = "users";
+    protected $table = "users";
 
     public static $rules = [
         "signin" => [
