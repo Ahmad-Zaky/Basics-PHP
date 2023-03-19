@@ -4,7 +4,7 @@ namespace Core;
 
 class Model
 {
-    protected static $table = "";
+    protected $table = "";
 
     public static function calledClass() 
     {
