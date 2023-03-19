@@ -475,6 +475,19 @@ if (! function_exists('authorize')) {
 }
 
 /**
+ * route function
+ * @param string $route
+ *
+ * @return void
+ */
+if (! function_exists('route')) {
+    function route($name)
+    {
+        return Router::getRoute($name);
+    }
+}
+
+/**
  * redirect function
  * @param string $route
  *

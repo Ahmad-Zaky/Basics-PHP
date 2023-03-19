@@ -1,8 +1,9 @@
+"use strict";
 
 const toggleUserEl = document.querySelector("#user-menu-button");
-const signoutEl = document.querySelector("#user-signout");
+const signoutEl = document.querySelectorAll(".user-signout");
 if (toggleUserEl) toggleUserEl.onclick = e => toggleUserMenu(e);
-if (signoutEl) signoutEl.onclick = e => signout(e);
+if (signoutEl && signoutEl.length) signoutEl.forEach( el => el.onclick = e => signout(e));
 
 function toggleUserMenu(e) {
     showClasses = ["show", "transform", "opacity-100", "scale-100"]

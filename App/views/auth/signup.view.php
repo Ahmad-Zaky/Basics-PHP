@@ -5,10 +5,10 @@
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         <p class="mb-6">
-            <a href="/" class="text-blue-500 underline">Go Back ...</a>
+            <a href="<?= route("home") ?>" class="text-blue-500 underline">Go Back ...</a>
         </p>
 
-        <form action="/signup" method="POST">
+        <form action="<?= route("signup") ?>" method="POST">
             <div class="shadow sm:overflow-hidden sm:rounded-md">
                 <div class="space-y-6 bg-white px-4 py-5 sm:p-6">
 

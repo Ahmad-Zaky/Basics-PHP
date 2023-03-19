@@ -5,10 +5,10 @@
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         <p class="mb-6">
-            <a href="/notes" class="text-blue-500 underline">Go Back ...</a>
+            <a href="<?= route("notes.index") ?>" class="text-blue-500 underline">Go Back ...</a>
         </p>
 
-        <form action="/notes?id=<?= $note["id"] ?>" method="POST">
+        <form action="<?= route("notes.update") ?>?id=<?= $note["id"] ?>" method="POST">
 
             <input type="hidden" name="_method" value="PUT">
 
@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                    <a href="/notes" class="inline-flex justify-center rounded-md bg-gray-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500">Cancel</a>
+                    <a href="<?= route("notes.index") ?>" class="inline-flex justify-center rounded-md bg-gray-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500">Cancel</a>
                     <button type="submit" class="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Update</button>
                 </div>
             </div>

@@ -4,6 +4,7 @@ namespace Core;
 
 use Core\Middlewares\Middleware;
 use Core\Response;
+use Exception;
 
 class Router
 {
@@ -42,21 +43,55 @@ class Router
             abort(Response::HTTP_NOT_FOUND);
         }
         
-        Middleware::resolve($route["middleware"]);
+        foreach ($route["middlewares"] as $middleware ) {
+            Middleware::resolve($middleware);
+        }
 
         require controllersPath(str_replace(".", DIRECTORY_SEPARATOR, $route["controller"]) .".php");
     }
-
-    protected static function register($uri, $controller, $method, $middleware = NULL)
+   
+    public static function getRoute($name)
     {
-        self::$routes["{$uri}.{$method}"] = compact("uri", "controller", "method", "middleware");
-        
+        foreach (self::$routes as $route) {
+            if ($route["name"] === $name) {
+                return self::getRouteUri($route["uri"]);
+            }
+        }
+
+        return NULL;
+    }
+
+    protected static function register($uri, $controller, $method, $middlewares = [], $name = NULL)
+    {
+        $uri = self::getRouteUri($uri);
+
+        self::$routes["{$uri}.{$method}"] = [
+            "uri" => $uri,
+            "controller" => $controller,
+            "method" => $method,
+            "middlewares" => $middlewares,
+            "name" => $name
+        ];
+
         return new self;
     }
 
     public function only($middleware) 
     {
-        self::$routes[array_key_last(self::$routes)]["middleware"] = $middleware;
+        self::$routes[array_key_last(self::$routes)]["middlewares"] = is_array($middleware) ? $middleware : [$middleware];
+
+        return $this;
+    }
+
+    public function name($name) 
+    {
+        foreach (self::$routes as $route) {
+            if ($route["name"] === $name) {
+                throw new Exception("'{$name}' route name already uesed by another route !");
+            }
+        }
+
+        self::$routes[array_key_last(self::$routes)]["name"] = $name;
 
         return $this;
     }
@@ -71,6 +106,11 @@ class Router
     public static function getUri() 
     {
         return self::$uri = parse_url($_SERVER["REQUEST_URI"])["path"];
+    }
+
+    public static function getRouteUri($uri = "") 
+    {
+        return  "/". ltrim(str_replace("//", "/", $uri), "/");
     }
 
     public static function getMethod() 
