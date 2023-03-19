@@ -42,14 +42,20 @@ class Router
         if (! $route = self::find()) {
             abort(Response::HTTP_NOT_FOUND);
         }
-        
+
         foreach ($route["middlewares"] as $middleware ) {
             Middleware::resolve($middleware);
         }
 
-        require controllersPath(str_replace(".", DIRECTORY_SEPARATOR, $route["controller"]) .".php");
+        if (is_callable($route["controller"])) {
+            ($route["controller"])(); exit();
+        }
+
+        $controller = new $route["controller"][0];
+        $action = $route["controller"][1] ?? NULL;
+        $action ? $controller->$action() : $controller();
     }
-   
+
     public static function getRoute($name)
     {
         foreach (self::$routes as $route) {

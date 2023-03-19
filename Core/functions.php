@@ -17,7 +17,7 @@ if (! function_exists("autoload")) {
     {
         spl_autoload_register(function ($class) {
             $class = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-        
+
             require basePath("{$class}.php");
         });
     }
@@ -371,7 +371,7 @@ if (! function_exists('view')) {
 
         $path = str_replace(".", DIRECTORY_SEPARATOR, $path) .".view.php";
 
-        require appPath("views". DIRECTORY_SEPARATOR . $path);
+        require appPath("Views". DIRECTORY_SEPARATOR . $path);
     }
 }
 
@@ -420,7 +420,7 @@ if (! function_exists('appPath')) {
 if (! function_exists('controllersPath')) {
     function controllersPath($path = "")
     {
-        return appPath("controllers". DIRECTORY_SEPARATOR . $path);
+        return appPath("Controllers". DIRECTORY_SEPARATOR . $path);
     }
 }
 
@@ -432,7 +432,7 @@ if (! function_exists('controllersPath')) {
 if (! function_exists('viewsPath')) {
     function viewsPath($path = "")
     {
-        return appPath("views". DIRECTORY_SEPARATOR . $path);
+        return appPath("Views". DIRECTORY_SEPARATOR . $path);
     }
 }
 

@@ -7,7 +7,7 @@ class Guest
     public function handle() 
     {
         if (auth()) {
-            redirect("/home");
+            redirect(route("home"));
 
             exit;
         }

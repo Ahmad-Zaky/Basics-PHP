@@ -53,7 +53,7 @@ class Validator
                 
                 return false;
             },
-    
+
             'max' => static function ($rule, $key, $value, $option) {
     
                 if (self::max($value, $option)) return true;                
