@@ -13,7 +13,6 @@
                             <a href="<?= route("notes.index") ?>" class="<?= urlIs(route("notes.index")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Notes</a>
                         <?php endif; ?>
 
-
                         <a href="<?= route("about") ?>" class="<?= urlIs(route("about")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">About Us</a>
 
                         <a href="<?= route("contact") ?>" class="<?= urlIs(route("contact")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Contact Us</a>
@@ -24,7 +23,7 @@
             <div class="hidden md:block">
                 <div class="ml-4 flex items-center md:ml-6">
 
-                    <?php if (! auth()): ?>
+                    <?php if (guest()): ?>
                         <a href="/signin" class="<?= urlIs("/signin") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Sign In</a>
 
                         <a href="/signup" class="<?= urlIs("/signup") ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Sign Up</a>

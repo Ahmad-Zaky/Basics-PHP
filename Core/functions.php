@@ -122,6 +122,18 @@ if (! function_exists("auth")) {
 }
 
 /**
+ * auth function
+ *
+ * @return void
+ */
+if (! function_exists("guest")) {
+    function guest($key = "")
+    {
+        return ! auth();
+    }
+}
+
+/**
  * setRequest function
  *
  * @return void
