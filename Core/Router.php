@@ -64,6 +64,8 @@ class Router
             abort(Response::HTTP_NOT_FOUND);
         }
 
+        Middleware::resolveDefault();
+
         foreach ($route["middlewares"] as $middleware ) {
             Middleware::resolve($middleware);
         }
@@ -201,7 +203,7 @@ class Router
         return  "/". ltrim(str_replace("//", "/", $uri), "/");
     }
 
-    public static function getMethod() 
+    public static function getMethod()
     {        
         $method = request("_method") ?? $_SERVER["REQUEST_METHOD"];
         

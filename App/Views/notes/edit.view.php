@@ -10,6 +10,8 @@
 
         <form action="<?= route("notes.update", ["id" => $note["id"]]) ?>" method="POST">
 
+            <?= csrfInput() ?>
+
             <input type="hidden" name="_method" value="PUT">
 
             <div class="shadow sm:overflow-hidden sm:rounded-md">

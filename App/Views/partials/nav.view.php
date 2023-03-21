@@ -54,7 +54,10 @@
 
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
                                 
-                                <form action="<?= route("signout") ?>" method="POST">                        
+                                <form action="<?= route("signout") ?>" method="POST">
+
+                                    <?= csrfInput() ?>
+
                                     <a href="#" class="block px-4 py-2 text-sm text-gray-700 user-signout" role="menuitem" tabindex="-1">Sign out</a>
                                 </form>
 
@@ -116,7 +119,10 @@
 
                     <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Settings</a>
 
-                    <form action="<?= route("signout") ?>" method="POST">                        
+                    <form action="<?= route("signout") ?>" method="POST">
+                        
+                        <?= csrfInput() ?>
+
                         <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white user-signout">Sign out</a>
                     </form>
                 </div>

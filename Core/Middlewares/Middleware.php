@@ -11,6 +11,17 @@ class Middleware
         'auth' => Auth::class,
     ];
      
+    public const DEFAULT = [
+        'csrf' => VerifyCsrfToken::class,
+    ];
+     
+    public static function resolveDefault()
+    {
+        foreach (Middleware::DEFAULT as $middleware) {
+            (new $middleware)->handle();
+        }
+    }
+     
     public static function resolve($key)
     {
         if (! $key) return;

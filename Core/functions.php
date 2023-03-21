@@ -158,6 +158,70 @@ if (! function_exists("request")) {
 }
 
 /**
+ * csrfToken function
+ *
+ * @return string
+ */
+if (! function_exists("csrfToken")) {
+    function csrfToken()
+    {
+        return isset($_SESSION["_token"]) ? $_SESSION["_token"] : generateToken(); 
+    }
+}
+
+/**
+ * generateToken function
+ *
+ * @return string
+ */
+if (! function_exists("generateToken")) {
+    function generateToken()
+    {
+        return $_SESSION['_token'] = bin2hex(random_bytes(40));
+    }
+}
+
+/**
+ * csrfInput function
+ *
+ * @return string
+ */
+if (! function_exists('csrfInput')) {
+    function csrfInput()
+    {
+        return '<input type="hidden" name="_token" value="'. csrfToken() .'">';
+    }
+}
+
+/**
+ * requestMethod function
+ *
+ * @return string
+ */
+if (! function_exists('requestMethod')) {
+    function requestMethod()
+    {
+        $method = request("_method") ?? $_SERVER["REQUEST_METHOD"];
+    
+        return strtoupper($method);
+    }
+}
+
+/**
+ * distroyCsrfToken function
+ *
+ * @return void
+ */
+if (! function_exists("distroyCsrfToken")) {
+    function distroyCsrfToken()
+    {
+        if (isset($_SESSION["_token"])) {
+            unset($_SESSION['_token']);
+        }
+    }
+}
+
+/**
  * session function
  *
  * @return void
