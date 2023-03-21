@@ -127,9 +127,13 @@ if (! function_exists("auth")) {
  * @return void
  */
 if (! function_exists("setRequest")) {
-    function setRequest()
+    function setRequest($params = [])
     {
         global $request;
+
+        foreach ($params as $key => $value) {
+            $_REQUEST[$key] = $value;
+        }
 
         $request = $_REQUEST;
     }
@@ -481,9 +485,9 @@ if (! function_exists('authorize')) {
  * @return void
  */
 if (! function_exists('route')) {
-    function route($name)
+    function route($name, $params = [])
     {
-        return Router::getRoute($name);
+        return Router::getRoute($name, $params);
     }
 }
 

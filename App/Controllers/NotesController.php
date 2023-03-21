@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use Core\Controller;
-
 use App\Models\Note;
 use Core\Validator;
 
@@ -19,9 +18,9 @@ class NotesController extends Controller
         ]);        
     }
 
-    public function show()
+    public function show($id)
     {
-        $note = Note::findOrFail(request("id"));
+        $note = Note::findOrFail($id);
 
         authorize($note["user_id"] === auth("id"));
 
@@ -47,9 +46,9 @@ class NotesController extends Controller
         redirect(route("notes.index"));
     }
 
-    public function edit()
+    public function edit($id)
     {
-        $note = Note::findOrFail(request("id"));
+        $note = Note::findOrFail($id);
 
         authorize($note["user_id"] === auth("id"));
 
@@ -59,9 +58,9 @@ class NotesController extends Controller
         ]);
     }
     
-    public function update()
+    public function update($id)
     {
-        $note = Note::findOrFail(request("id"));
+        $note = Note::findOrFail($id);
 
         authorize($note["user_id"] === auth("id"));
 
@@ -74,9 +73,9 @@ class NotesController extends Controller
         redirect(route("notes.index"));
     }
 
-    public function destroy()
+    public function destroy($id)
     {
-        $note = Note::findOrFail(request("id"));
+        $note = Note::findOrFail($id);
 
         authorize($note["user_id"] === auth("id"));
 

@@ -13,7 +13,7 @@
         <ul>
             <?php foreach ($notes as $note): ?>
                 <li>
-                    <a href="<?= route("notes.show") ?>?id=<?= $note["id"] ?>" class="text-blue-500 hover:underline">
+                    <a href="<?= route("notes.show", ["id" => $note["id"]]) ?>" class="text-blue-500 hover:underline">
                         <p class="ellipsis"><?= sanitize($note["body"]) ?></p>
                     </a>
                 </li>

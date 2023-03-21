@@ -8,7 +8,7 @@
             <a href="<?= route("notes.index") ?>" class="text-blue-500 underline">Go Back ...</a>
         </p>
 
-        <form action="<?= route("notes.update") ?>?id=<?= $note["id"] ?>" method="POST">
+        <form action="<?= route("notes.update", ["id" => $note["id"]]) ?>" method="POST">
 
             <input type="hidden" name="_method" value="PUT">
 

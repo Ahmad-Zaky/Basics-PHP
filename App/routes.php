@@ -17,18 +17,18 @@ Router::GET("contact", [ContactController::class])->name("contact");
 
 /*** AUTH ***/
 
-Router::GET("signup", [AuthController::class, "signupForm"])->only("guest")->name("signup.form");
-Router::POST("signup", [AuthController::class, "signup"])->only("guest")->name("signup");
-Router::GET("signin", [AuthController::class, "signinForm"])->only("guest")->name("signin.form");
-Router::POST("signin", [AuthController::class, "signin"])->only("guest")->name("signin");
-Router::POST("signout", [AuthController::class, "signout"])->only("auth")->name("signout");
+Router::GET("signup", [AuthController::class, "signupForm"])->middleware("guest")->name("signup.form");
+Router::POST("signup", [AuthController::class, "signup"])->middleware("guest")->name("signup");
+Router::GET("signin", [AuthController::class, "signinForm"])->middleware("guest")->name("signin.form");
+Router::POST("signin", [AuthController::class, "signin"])->middleware("guest")->name("signin");
+Router::POST("signout", [AuthController::class, "signout"])->middleware("auth")->name("signout");
 
 /*** NOTES ***/
 
-Router::GET("notes", [NotesController::class, "index"])->only("auth")->name("notes.index");
-Router::GET("note", [NotesController::class, "show"])->only("auth")->name("notes.show");
-Router::GET("notes/create", [NotesController::class, "create"])->only("auth")->name("notes.create");
-Router::GET("notes/edit", [NotesController::class, "edit"])->only("auth")->name("notes.edit");
-Router::POST("notes", [NotesController::class, "store"])->only("auth")->name("notes.store");
-Router::PUT("notes", [NotesController::class, "update"])->only("auth")->name("notes.update");
-Router::DELETE("notes", [NotesController::class, "destroy"])->only("auth")->name("notes.destroy");
+Router::GET("notes", [NotesController::class, "index"])->middleware("auth")->name("notes.index");
+Router::GET("notes/create", [NotesController::class, "create"])->middleware("auth")->name("notes.create");
+Router::GET("notes/{id}", [NotesController::class, "show"])->middleware("auth")->name("notes.show");
+Router::GET("notes/{id}/edit", [NotesController::class, "edit"])->middleware("auth")->name("notes.edit");
+Router::POST("notes", [NotesController::class, "store"])->middleware("auth")->name("notes.store");
+Router::PUT("notes/{id}", [NotesController::class, "update"])->middleware("auth")->name("notes.update");
+Router::DELETE("notes/{id}", [NotesController::class, "destroy"])->middleware("auth")->name("notes.destroy");
