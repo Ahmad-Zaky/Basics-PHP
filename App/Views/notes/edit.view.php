@@ -1,5 +1,5 @@
 <?php view("partials.head", ["heading" => $heading]); ?>
-<?php view("partials.nav"); ?>
+<?php view("partials.nav", ["module" => $module]); ?>
 <?php view("partials.banner", ["heading" => $heading]); ?>
 
 <main>
@@ -8,7 +8,7 @@
             <a href="<?= route("notes.index") ?>" class="text-blue-500 underline">Go Back ...</a>
         </p>
 
-        <form action="<?= route("notes.update", ["id" => $note["id"]]) ?>" method="POST">
+        <form action="<?= route("notes.update", ["id" => $note->id]) ?>" method="POST">
 
             <?= csrfInput() ?>
 
@@ -28,7 +28,7 @@
                                 rows="3"
                                 class="mt-1 block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
                                 placeholder="Here's an idea for a note ..."
-                            ><?= old("body", $note["body"]) ?></textarea>
+                            ><?= old("body", $note->body) ?></textarea>
 
                             <?php if (hasErrors("body")): ?>
                                 <ul>

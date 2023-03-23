@@ -1,5 +1,5 @@
 <?php view("partials.head", ["heading" => $heading]); ?>
-<?php view("partials.nav"); ?>
+<?php view("partials.nav", ["module" => $module]); ?>
 <?php view("partials.banner", ["heading" => $heading]); ?>
 
 <main>

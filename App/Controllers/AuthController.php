@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Core\Controller;
 use App\Models\User;
 use Core\Validator;
+use Exception;
 
 class AuthController extends Controller
 {
@@ -20,7 +21,7 @@ class AuthController extends Controller
 
             $user = User::findByEmail($data["email"]);
 
-            if ($user && verifyHash($data["password"], $user["password"])) {
+            if ($user && verifyHash($data["password"], $user->password)) {
                 signin($user);
 
                 redirect(route("home"));
@@ -44,13 +45,15 @@ class AuthController extends Controller
         if (validate(User::$rules["signup"])) {
             $data = Validator::validated();
 
-            User::create([
+            $user = User::create([
                 "name" => $data["name"],
                 "email" => $data["email"],
                 "password" => bcrypt($data["password"]),
             ]);
 
-            signin($data);
+            if (! $user) throw new Exception("Failed to signup !");
+
+            signin($user);
         }
 
         redirect(route("home"));

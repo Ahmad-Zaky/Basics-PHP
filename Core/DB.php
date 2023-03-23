@@ -85,4 +85,9 @@ class DB
 
         return isset($this->columns[$table][$column]);
     }
+
+    public function lastId()
+    {
+        return $this->connection->lastInsertId();
+    }
 }

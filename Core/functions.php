@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Core\App;
 use Core\Container;
 use Core\DB;
@@ -68,11 +69,11 @@ if (! function_exists("config")) {
  * @return void
  */
 if (! function_exists("signin")) {
-    function signin($user = "")
+    function signin($user = NULL)
     {
         $_SESSION["user"] = [
-            "name" => $user["name"],
-            "email" => $user["email"]
+            "name" => $user->name,
+            "email" => $user->email
         ];
 
         session_regenerate_id();
@@ -104,17 +105,15 @@ if (! function_exists("auth")) {
     function auth($key = "")
     {
         global $auth;
-        
-        if (empty($auth)) {
-            $db = app(DB::class);
 
+        if (empty($auth)) {
             $auth = ($email = session("user")["email"] ?? NULL)
-                ? $db->query("SELECT * FROM users WHERE email = :email", ["email" => $email])->findOrFail()
+                ? User::findOrFailByEmail($email)
                 : NULL;
         }
 
         if ($key) {
-            return isset($auth[$key]) ? $auth[$key] : NULL;
+            return $auth && $auth->has($key) ? $auth->{$key} : NULL;
         }
 
         return $auth;
@@ -419,6 +418,19 @@ if (! function_exists('urlIs')) {
     function urlIs($value='')
     {
         return $_SERVER["REQUEST_URI"] === $value;
+    }
+}
+
+/**
+ * urlIn function
+ *
+ * @param [type] $value
+ * @return void
+ */
+if (! function_exists('urlIn')) {
+    function urlIn(array $routes)
+    {        
+        return in_array($_SERVER["REQUEST_URI"], $routes) && true;
     }
 }
 

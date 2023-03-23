@@ -1,5 +1,5 @@
 <?php view("partials.head", ["heading" => $heading]); ?>
-<?php view("partials.nav"); ?>
+<?php view("partials.nav", ["module" => $module]); ?>
 <?php view("partials.banner", ["heading" => $heading]); ?>
 
 <main>
@@ -13,8 +13,8 @@
         <ul>
             <?php foreach ($notes as $note): ?>
                 <li>
-                    <a href="<?= route("notes.show", ["id" => $note["id"]]) ?>" class="text-blue-500 hover:underline">
-                        <p class="ellipsis"><?= sanitize($note["body"]) ?></p>
+                    <a href="<?= route("notes.show", ["id" => $note->id]) ?>" class="text-blue-500 hover:underline">
+                        <p class="ellipsis"><?= sanitize($note->body) ?></p>
                     </a>
                 </li>
             <?php endforeach; ?>

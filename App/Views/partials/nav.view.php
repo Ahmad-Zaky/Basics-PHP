@@ -10,7 +10,7 @@
                         <a href="<?= route("home") ?>" class="<?= urlIs(route("home")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
 
                         <?php if (auth()): ?>
-                            <a href="<?= route("notes.index") ?>" class="<?= urlIs(route("notes.index")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Notes</a>
+                            <a href="<?= route("notes.index") ?>" class="<?= ($module === "notes") ?? false ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Notes</a>
                         <?php endif; ?>
 
                         <a href="<?= route("about") ?>" class="<?= urlIs(route("about")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">About Us</a>

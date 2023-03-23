@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Core\DB;
 use Core\Model;
 
 class User extends Model
@@ -23,8 +22,11 @@ class User extends Model
 
     public static function findByEmail($email) 
     {
-        $db = app(DB::class);
+        return (new self)->query("SELECT * FROM users WHERE email = :email", ["email" => $email])->first();
+    }
 
-        return $db->query("SELECT * FROM users WHERE email = :email", ["email" => $email])->find();
+    public static function findOrFailByEmail($email) 
+    {
+        return (new self)->query("SELECT * FROM users WHERE email = :email", ["email" => $email])->firstOrFail();
     }
 }
