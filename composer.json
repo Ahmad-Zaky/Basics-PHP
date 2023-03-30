@@ -1,0 +1,19 @@
+{
+    "name": "zaky/framework",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Core\\": "core/"
+        },
+        "files": [
+            "core/functions.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Ahmed Zaky",
+            "email": "ahmed6mohamed6@gmail.com"
+        }
+    ],
+    "require": {}
+}

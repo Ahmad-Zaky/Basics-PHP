@@ -1,15 +1,22 @@
 <?php
 
-session_start();
+session_start(); // TODO: Move it to session class 
 
-const BASE_PATH = __DIR__ . DIRECTORY_SEPARATOR ."..". DIRECTORY_SEPARATOR;
+define('ZAKY_START', microtime(true));
 
-require BASE_PATH . "Core". DIRECTORY_SEPARATOR ."globals.php";
+require dirname(__DIR__) .'/vendor/autoload.php';
 
-require BASE_PATH . "Core". DIRECTORY_SEPARATOR ."functions.php";
+// TODO: remove when done refactoring
+showErrors();
 
-require BASE_PATH . "Core". DIRECTORY_SEPARATOR ."autoloader.php";
+// TODO: remove it when classes are used
+require dirname(__DIR__) .'/core/globals.php';
 
-require appPath("routes.php");
+// TODO: move to Router class when handled properly
+require dirname(__DIR__) .'/app/routes.php';
 
-require corePath("bootstrap.php");
+$app = require dirname(__DIR__) .'/app/bootstrap.php';
+
+$app->run();
+
+

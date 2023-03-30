@@ -26,6 +26,13 @@ class DB
         ]);
     }
 
+    public function raw($query)
+    {
+        $this->connection->exec($query);
+        
+        return $this;
+    }
+
     public function query($query, $params = []) 
     {
         $this->statement = $this->connection->prepare($query);
@@ -35,19 +42,19 @@ class DB
         return $this;
     }
 
-    public function get() 
+    public function get($options = PDO::FETCH_DEFAULT) 
     {
-        return $this->statement->fetchAll();
+        return $this->statement->fetchAll($options);
     }
 
-    public function find() 
+    public function find($options = NULL) 
     {
-        return $this->statement->fetch();
+        return $this->statement->fetch($options);
     }
 
-    public function findOrFail() 
+    public function findOrFail($options = NULL) 
     {
-        if (! $item = $this->find()) {
+        if (! $item = $this->find($options)) {
             abort(Response::HTTP_NOT_FOUND);
         }
 

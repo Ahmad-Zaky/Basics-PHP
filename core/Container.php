@@ -13,6 +13,15 @@ class Container
         $this->bindings[$key] = $resolver;
     }
 
+    public function bindList($binds) 
+    {
+        array_map(
+            fn ($bind, $resolver) => $this->bindings[$bind] = $resolver,
+            array_keys($binds),
+            $binds
+        );
+    }
+
     public function resolve($key)
     {
         if (! array_key_exists($key, $this->bindings)) {

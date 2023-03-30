@@ -49,15 +49,24 @@ if (! function_exists("run")) {
  * @return void
  */
 if (! function_exists("config")) {
-    function config($configPath = "")
+    function config($keys = "")
     {
-        $file = explode(".", $configPath)[0];
-        $key = explode(".", $configPath)[1] ?? NULL;
-        
+        $keyParts = explode(".", $keys);
+
+        $file = $keyParts[0]; unset($keyParts[0]);
+
+        // TODO: Load config files upfront
         $config = require appPath("Config". DIRECTORY_SEPARATOR ."{$file}.php");
 
-        if ($key) {
-            return isset($config[$key]) ? $config[$key] : NULL;
+        if (! empty($keyParts)) {
+            $found = $config;
+            foreach ($keyParts as $key) {
+                $found = $found[$key] ?? NULL;
+    
+                if (! $found) return NULL;
+            }
+    
+            return $found;
         }
 
         return $config;
@@ -477,7 +486,7 @@ if (! function_exists('view')) {
 if (! function_exists('basePath')) {
     function basePath($path = "")
     {
-        return BASE_PATH . $path;
+        return App::$ROOT_DIR . DIRECTORY_SEPARATOR . $path;
     }
 }
 
@@ -489,7 +498,7 @@ if (! function_exists('basePath')) {
 if (! function_exists('corePath')) {
     function corePath($path = "")
     {
-        return basePath("Core". DIRECTORY_SEPARATOR . $path);
+        return basePath("core". DIRECTORY_SEPARATOR . $path);
     }
 }
 
@@ -501,7 +510,7 @@ if (! function_exists('corePath')) {
 if (! function_exists('appPath')) {
     function appPath($path = "")
     {
-        return basePath("App". DIRECTORY_SEPARATOR . $path);
+        return basePath("app". DIRECTORY_SEPARATOR . $path);
     }
 }
 
