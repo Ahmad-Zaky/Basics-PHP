@@ -10,6 +10,8 @@ class Router
 {
     protected static $uri = "/";
     
+    protected static $uriParams = [];
+
     protected static $routes = [];
 
     protected static $pattern = "#^%s$#siD";
@@ -60,6 +62,8 @@ class Router
 
     public static function route()
     {
+        self::loadRoutes();
+
         if (! $route = self::find()) {
             abort(Response::HTTP_NOT_FOUND);
         }
@@ -71,6 +75,11 @@ class Router
         }
 
         self::execute($route);
+    }
+
+    public static function loadRoutes() 
+    {
+        require_once appPath('routes.php');
     }
 
     public static function execute($route)
@@ -95,7 +104,19 @@ class Router
 
     protected static function addUriPararmsToRequest($params = [])
     {
-        setRequest($params);
+        foreach ($params as $key => $value) {
+            self::setUriParameter($key, $value); 
+        }
+    }
+
+    protected static function setUriParameter($key, $value)
+    {
+        self::$uriParams[$key] = $value;
+    }
+
+    protected function param($key)
+    {
+        return self::$uriParams[$key] ?? NULL;
     }
 
     protected static function uriParameters($routeUri)
@@ -104,8 +125,6 @@ class Router
         $uri = trim(self::getUri(), '/');
         $uriParts = explode("/", $uri);
         $routeUriParts = explode("/", $routeUri);
-
-        // dd(explode("/", $routeUri));
 
         if (! empty($routeUriParts) && count($routeUriParts) !== count($uriParts)) {
             throw new Exception("Failed to fetch route parameters !");
@@ -222,5 +241,15 @@ class Router
 
             throw new Exception("'{$uriParam}' route parameter is missing !");
         }
+    }
+
+    public function urlIs($value)
+    {
+        return $_SERVER["REQUEST_URI"] === $value;
+    }
+
+    public function urlIn(array $routes) 
+    {
+        return in_array($_SERVER["REQUEST_URI"], $routes) && true;
     }
 }

@@ -47,12 +47,12 @@ class DB
         return $this->statement->fetchAll($options);
     }
 
-    public function find($options = NULL) 
+    public function find($options = PDO::FETCH_DEFAULT) 
     {
         return $this->statement->fetch($options);
     }
 
-    public function findOrFail($options = NULL) 
+    public function findOrFail($options = PDO::FETCH_DEFAULT) 
     {
         if (! $item = $this->find($options)) {
             abort(Response::HTTP_NOT_FOUND);

@@ -9,6 +9,8 @@ class Validator
     protected static $validated;
     
     protected static $messages;
+    
+    protected static $errors;
 
     public static function validate($rules) 
     {
@@ -22,7 +24,7 @@ class Validator
             self::isValid($keyRules, $key, $value);
         }
         
-        global $errors; if (empty($errors)) return true;
+        if (empty(self::$errors)) return true;
 
         self::passErrorsToSession();
 
@@ -222,12 +224,10 @@ class Validator
 
     public static function addError($rule, $key, $placeHolders = []) 
     {
-        global $errors;
-
-        $errors[$key][$rule] = self::getMessage($rule, $placeHolders);
+        self::$errors[$key][$rule] = self::getMessage($rule, $placeHolders);
     }
-    
+
     protected static function passErrorsToSession() {
-        global $errors; $_SESSION['errors'] = $errors;
+        session()->setFlash("errors", self::$errors);
     }
 }

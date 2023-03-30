@@ -9,6 +9,7 @@ class Session
     function __construct()
     {
         session_start();
+
         $this->markFlashMessages();
     }
 
@@ -48,6 +49,54 @@ class Session
     public function getFlash($key) 
     {
         return $_SESSION[self::FLASH][$key]["message"] ?? NULL;
+    }
+
+    public function destroy()
+    {
+        $_SESSION = [];
+        session_destroy();
+
+        $params = session_get_cookie_params();
+        setcookie(
+            "PHPSESSID",
+            "",
+            time() - 3600,
+            $params["path"],
+            $params["domain"],
+            $params["secure"],
+            $params["httponly"]
+        );
+    }
+
+    public function csrf()
+    {
+        return $_SESSION["_token"] ?? $this->genCsrf();
+    }
+
+    public function genCsrf() 
+    {
+        return $_SESSION['_token'] = bin2hex(random_bytes(40));
+    }
+    
+    public function csrfInput() 
+    {
+        return '<input type="hidden" name="_token" value="'. $this->csrf() .'">';
+    }
+
+    public function destroyCsrf() 
+    {
+        unset($_SESSION['_token']);
+    }
+
+    public function signin($user)
+    {
+        $_SESSION["user"] = [
+            "id" => $user->id,
+            "name" => $user->name,
+            "email" => $user->email
+        ];
+
+        session_regenerate_id();
     }
 
     function __destruct()

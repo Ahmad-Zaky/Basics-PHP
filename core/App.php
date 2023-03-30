@@ -22,10 +22,11 @@ class App
      
         App::setContainer($container);
 
-        $this->bindList([
+        $this->singletonList([
             Config::class => fn() => new Config,
             DB::class => fn() => new DB(config("database.connection")),
             Session::class => fn() => new Session,
+            Auth::class => fn() => new Auth,
             Router::class => fn() => new Router,
             Request::class => fn() => new Request,
             Validator::class => fn() => new Validator,
@@ -39,7 +40,7 @@ class App
 
     public function run()
     {
-        run();
+        Router::route();
     }
 
     public static function setContainer($container) 
@@ -52,14 +53,24 @@ class App
         return static::$container;
     }
 
-    public static function bind($key, $resolver)
+    public function bind($key, $resolver)
     {
         return static::container()->bind($key, $resolver);
     }
 
-    public static function bindList($binds)
+    public function bindList($binds)
     {
         return static::container()->bindList($binds);
+    }
+
+    public function singleton($key, $resolver)
+    {
+        return static::container()->singleton($key, $resolver);
+    }
+
+    public function singletonList($binds)
+    {
+        return static::container()->singletonList($binds);
     }
 
     public static function resolve($key)

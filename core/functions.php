@@ -1,47 +1,6 @@
 <?php
 
-use App\Models\User;
-use Core\App;
-use Core\Container;
-use Core\DB;
-use Core\Response;
-use Core\Router;
-use Core\Validator;
-
-/**
- * autoload function
- *
- * @return void
- */
-if (! function_exists("autoload")) {
-    function autoload()
-    {
-        spl_autoload_register(function ($class) {
-            $class = str_replace('\\', DIRECTORY_SEPARATOR, $class);
-
-            require basePath("{$class}.php");
-        });
-    }
-}
-
-/**
- * run function
- *
- * @return void
- */
-if (! function_exists("run")) {
-    function run()
-    {
-        setRequest();
-        setErrors();
-        setOld();
-        config("database");
-        registerServices();
-        auth();
-
-        Router::route();
-    }
-}
+use Core\{App, Response, Router, Validator};
 
 /**
  * config function
@@ -51,25 +10,7 @@ if (! function_exists("run")) {
 if (! function_exists("config")) {
     function config($keys = "")
     {
-        $keyParts = explode(".", $keys);
-
-        $file = $keyParts[0]; unset($keyParts[0]);
-
-        // TODO: Load config files upfront
-        $config = require appPath("Config". DIRECTORY_SEPARATOR ."{$file}.php");
-
-        if (! empty($keyParts)) {
-            $found = $config;
-            foreach ($keyParts as $key) {
-                $found = $found[$key] ?? NULL;
-    
-                if (! $found) return NULL;
-            }
-    
-            return $found;
-        }
-
-        return $config;
+        app(Core\Config::class)->get($keys);
     }
 }
 
@@ -81,12 +22,7 @@ if (! function_exists("config")) {
 if (! function_exists("signin")) {
     function signin($user = NULL)
     {
-        $_SESSION["user"] = [
-            "name" => $user->name,
-            "email" => $user->email
-        ];
-
-        session_regenerate_id();
+        session()->signin($user);
     }
 }
 
@@ -98,11 +34,7 @@ if (! function_exists("signin")) {
 if (! function_exists("signout")) {
     function signout()
     {
-        $_SESSION = [];
-        session_destroy();
-
-        $params = session_get_cookie_params();
-        setcookie("PHPSESSID", "", time() - 3600, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+        session()->destroy();
     }
 }
 
@@ -114,14 +46,8 @@ if (! function_exists("signout")) {
 if (! function_exists("auth")) {
     function auth($key = "")
     {
-        global $auth;
-
-        if (empty($auth)) {
-            $auth = ($email = session("user")["email"] ?? NULL)
-                ? User::findOrFailByEmail($email)
-                : NULL;
-        }
-
+        $auth = app(Core\Auth::class)->user();
+        
         if ($key) {
             return $auth && $auth->has($key) ? $auth->{$key} : NULL;
         }
@@ -136,27 +62,9 @@ if (! function_exists("auth")) {
  * @return void
  */
 if (! function_exists("guest")) {
-    function guest($key = "")
+    function guest()
     {
         return ! auth();
-    }
-}
-
-/**
- * setRequest function
- *
- * @return void
- */
-if (! function_exists("setRequest")) {
-    function setRequest($params = [])
-    {
-        global $request;
-
-        foreach ($params as $key => $value) {
-            $_REQUEST[$key] = $value;
-        }
-
-        $request = $_REQUEST;
     }
 }
 
@@ -168,10 +76,10 @@ if (! function_exists("setRequest")) {
 if (! function_exists("request")) {
     function request($key = "")
     {
-        global $request;
+        $request = app(Core\Request::class);
 
         if ($key) {
-            return isset($request[$key]) ? $request[$key] : NULL;
+            return $request->body()[$key] ?? NULL;
         }
 
         return $request;
@@ -186,7 +94,7 @@ if (! function_exists("request")) {
 if (! function_exists("csrfToken")) {
     function csrfToken()
     {
-        return isset($_SESSION["_token"]) ? $_SESSION["_token"] : generateToken(); 
+        return session()->csrf();
     }
 }
 
@@ -198,7 +106,7 @@ if (! function_exists("csrfToken")) {
 if (! function_exists("generateToken")) {
     function generateToken()
     {
-        return $_SESSION['_token'] = bin2hex(random_bytes(40));
+        return session()->genCsrf();
     }
 }
 
@@ -210,7 +118,7 @@ if (! function_exists("generateToken")) {
 if (! function_exists('csrfInput')) {
     function csrfInput()
     {
-        return '<input type="hidden" name="_token" value="'. csrfToken() .'">';
+        return session()->csrfInput();
     }
 }
 
@@ -221,10 +129,8 @@ if (! function_exists('csrfInput')) {
  */
 if (! function_exists('requestMethod')) {
     function requestMethod()
-    {
-        $method = request("_method") ?? $_SERVER["REQUEST_METHOD"];
-    
-        return strtoupper($method);
+    {    
+        return strtoupper(request()->method());
     }
 }
 
@@ -236,9 +142,7 @@ if (! function_exists('requestMethod')) {
 if (! function_exists("distroyCsrfToken")) {
     function distroyCsrfToken()
     {
-        if (isset($_SESSION["_token"])) {
-            unset($_SESSION['_token']);
-        }
+        session()->destroyCsrf();
     }
 }
 
@@ -250,30 +154,12 @@ if (! function_exists("distroyCsrfToken")) {
 if (! function_exists("session")) {
     function session($key = "")
     {
+        $session = app(Core\Session::class);
         if ($key) {
-            return isset($_SESSION[$key]) ? $_SESSION[$key] : NULL;
+            return $session->get($key);
         }
 
-        return $_SESSION;
-    }
-}
-
-/**
- * registerServices function
- *
- * @return void
- */
-if (! function_exists("registerServices")) {
-    function registerServices() 
-    {
-        $container = new Container;
-
-        // Register DB object
-        $container->bind(DB::class, function () {
-            return new DB(config("database.connection"));
-        });
-
-        App::setContainer($container);
+        return $session;
     }
 }
 
@@ -289,51 +175,7 @@ if (! function_exists("app")) {
             return App::resolve($key);
         }
 
-        return App::container();
-    }
-}
-
-/**
- * setErrors function
- *
- * @return void
- */
-if (! function_exists("setErrors")) {
-    function setErrors()
-    {        
-        if (isset($_SESSION["errors"])) {
-            global $errors;
-
-            $errors = $_SESSION["errors"];
-        
-            unset($_SESSION['errors']);
-        }
-    }
-}
-
-/**
- * setOld function
- *
- * @return void
- */
-if (! function_exists("setOld")) {
-    function setOld()
-    {
-        if (in_array($_SERVER["REQUEST_METHOD"], ["POST", "PUT", "PATCH"])) {
-            if (! isset($_POST)) return;
-    
-            $_SESSION['old'] = $_POST;
-
-            return;
-        }
-
-        if (isset($_SESSION['old'])) {
-            global $old;
-            
-            $old = $_SESSION['old'];
-    
-            unset($_SESSION['old']);
-        }
+        return App::$app;
     }
 }
 
@@ -345,13 +187,7 @@ if (! function_exists("setOld")) {
 if (! function_exists("old")) {
     function old($key, $default = "")
     {
-        global $old;
-
-        if (isset($old[$key])) {
-            return $old[$key];
-        }
-
-        return $default;
+        return session()->getFlash("old")[$key] ?? $default;
     }
 }
 
@@ -425,9 +261,9 @@ if (! function_exists('dump')) {
  * @return void
  */
 if (! function_exists('urlIs')) {
-    function urlIs($value='')
+    function urlIs($value = '')
     {
-        return $_SERVER["REQUEST_URI"] === $value;
+        app(Core\Router::class)->urlIs($value);
     }
 }
 
@@ -439,8 +275,8 @@ if (! function_exists('urlIs')) {
  */
 if (! function_exists('urlIn')) {
     function urlIn(array $routes)
-    {        
-        return in_array($_SERVER["REQUEST_URI"], $routes) && true;
+    {
+        app(Core\Router::class)->urlIn($routes);
     }
 }
 
@@ -453,11 +289,7 @@ if (! function_exists('urlIn')) {
 if (! function_exists('abort')) {
     function abort(int $code = 404)
     {
-        http_response_code($code);
-
-        require view("errors.{$code}");
-
-        exit;
+        app(Core\Request::class)->abort($code);
     }
 }
 
@@ -469,11 +301,7 @@ if (! function_exists('abort')) {
 if (! function_exists('view')) {
     function view($path = "", $attributes = [])
     {
-        extract($attributes);
-
-        $path = str_replace(".", DIRECTORY_SEPARATOR, $path) .".view.php";
-
-        require appPath("Views". DIRECTORY_SEPARATOR . $path);
+        app(Core\View::class)->render($path, $attributes);
     }
 }
 
@@ -570,9 +398,9 @@ if (! function_exists('errorsPath')) {
  * @return void
  */
 if (! function_exists('authorize')) {
-    function authorize($condition, $status = Response::HTTP_FORBIDDEN)
+    function authorize($condition, $status = Core\Response::HTTP_FORBIDDEN)
     {
-        if (! $condition) abort($status);
+        if (! $condition) app(Core\Request::class)->abort($status);
     }
 }
 
@@ -610,7 +438,7 @@ if (! function_exists('redirect')) {
 if (! function_exists('back')) {
     function back($session = [])
     {
-        Response::back($session);
+        Core\Response::back($session);
     }
 }
 
@@ -623,7 +451,7 @@ if (! function_exists('back')) {
 if (! function_exists('errors')) {
     function errors($key = "")
     {   
-        global $errors;
+        $errors = session()->getFlash("errors") ?? [];
 
         return array_key_exists($key, $errors) ? $errors[$key] : [];
     }
@@ -638,7 +466,7 @@ if (! function_exists('errors')) {
 if (! function_exists('hasErrors')) {
     function hasErrors($key = "")
     {
-        global $errors;
+        $errors = session()->getFlash("errors") ?? [];
 
         return array_key_exists($key, $errors);
     }

@@ -7,7 +7,7 @@
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-4">
-                        <a href="<?= route("home") ?>" class="<?= urlIs(route("home")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
+                        <a href="<?= route("home") ?>" class="<?= (urlIs(route("home")) || urlIs(route("index"))) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
 
                         <?php if (auth()): ?>
                             <a href="<?= route("notes.index") ?>" class="<?= ($module === "notes") ?? false ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Notes</a>
@@ -86,7 +86,7 @@
         <!-- Mobile menu, show/hide based on menu state. -->
         <div class="md:hidden" id="mobile-menu">
             <div class="space-y-1 px-2 pt-2 pb-3 sm:px-3">
-                <a href="<?= route("home") ?>" class="<?= urlIs(route("home")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
+                <a href="<?= route("home") ?>" class="<?= (urlIs(route("home")) || urlIs(route("index"))) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> bg-gray-900 text-white block rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
 
                 <?php if (auth()): ?>                        
                     <a href="<?= route("notes.index") ?>" class="<?= urlIs(route("notes.index")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium">Notes</a>

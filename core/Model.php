@@ -34,11 +34,6 @@ class Model
         return NULL;
     }
 
-    public function has($key)
-    {
-        return array_key_exists($key, $this->attributes);
-    }
-
     protected function setAttribute($key, $value)
     {
         $this->attributes[$key] = $value;
@@ -46,12 +41,12 @@ class Model
         return $this;
     }
 
-    protected function getAttributes()
+    public function getAttributes()
     {
         return $this->attributes;
     }
 
-    protected function setAttributes($data) 
+    public function setAttributes($data) 
     {
         foreach($data as  $key => $value) {
             $this->setAttribute($key, $value);
@@ -68,6 +63,11 @@ class Model
     public function __set($key, $value)
     {
         $this->setAttribute($key, $value);
+    }
+
+    public function has($key)
+    {
+        return array_key_exists($key, $this->attributes);
     }
 
     protected function buildModels($modelsList)
@@ -122,7 +122,7 @@ class Model
         $placeHolders = implode(', ', array_fill(0, count($data), "?"));
 
         if ($db->query("INSERT INTO {$table} ({$fields}) VALUES ({$placeHolders})", array_values($data))) {
-            return self::calledClassInstance()->buildModel(array_merge($data, ["id", $db->lastId()]));
+            return self::calledClassInstance()->buildModel(array_merge($data, ["id" => $db->lastId()]));
         }
         
         return NULL;
