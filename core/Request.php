@@ -32,7 +32,7 @@ class Request
             }
         }
 
-        if (in_array($this->method(), ["POST", "PUT", "PATCH"])) {
+        if (in_array($this->method(), ["POST", "PUT", "PATCH", "DELETE"])) {
             foreach ($_POST as $key => $_) {
                 $this->body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
             }
