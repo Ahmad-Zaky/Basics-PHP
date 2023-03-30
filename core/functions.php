@@ -1,6 +1,6 @@
 <?php
 
-use Core\{App, Response, Router, Validator};
+use Core\{App, Auth, Session, Response, Router, Request, Config, View, Validator};
 
 /**
  * config function
@@ -10,7 +10,7 @@ use Core\{App, Response, Router, Validator};
 if (! function_exists("config")) {
     function config($keys = "")
     {
-        app(Core\Config::class)->get($keys);
+        return app(Config::class)->get($keys);
     }
 }
 
@@ -46,7 +46,7 @@ if (! function_exists("signout")) {
 if (! function_exists("auth")) {
     function auth($key = "")
     {
-        $auth = app(Core\Auth::class)->user();
+        $auth = app(Auth::class)->user();
         
         if ($key) {
             return $auth && $auth->has($key) ? $auth->{$key} : NULL;
@@ -76,7 +76,7 @@ if (! function_exists("guest")) {
 if (! function_exists("request")) {
     function request($key = "")
     {
-        $request = app(Core\Request::class);
+        $request = app(Request::class);
 
         if ($key) {
             return $request->body()[$key] ?? NULL;
@@ -154,7 +154,7 @@ if (! function_exists("distroyCsrfToken")) {
 if (! function_exists("session")) {
     function session($key = "")
     {
-        $session = app(Core\Session::class);
+        $session = app(Session::class);
         if ($key) {
             return $session->get($key);
         }
@@ -263,7 +263,7 @@ if (! function_exists('dump')) {
 if (! function_exists('urlIs')) {
     function urlIs($value = '')
     {
-        app(Core\Router::class)->urlIs($value);
+        return app(Router::class)->urlIs($value);
     }
 }
 
@@ -276,7 +276,7 @@ if (! function_exists('urlIs')) {
 if (! function_exists('urlIn')) {
     function urlIn(array $routes)
     {
-        app(Core\Router::class)->urlIn($routes);
+        return app(Router::class)->urlIn($routes);
     }
 }
 
@@ -289,7 +289,7 @@ if (! function_exists('urlIn')) {
 if (! function_exists('abort')) {
     function abort(int $code = 404)
     {
-        app(Core\Request::class)->abort($code);
+        app(Request::class)->abort($code);
     }
 }
 
@@ -301,7 +301,7 @@ if (! function_exists('abort')) {
 if (! function_exists('view')) {
     function view($path = "", $attributes = [])
     {
-        app(Core\View::class)->render($path, $attributes);
+        app(View::class)->render($path, $attributes);
     }
 }
 
@@ -398,9 +398,9 @@ if (! function_exists('errorsPath')) {
  * @return void
  */
 if (! function_exists('authorize')) {
-    function authorize($condition, $status = Core\Response::HTTP_FORBIDDEN)
+    function authorize($condition, $status = Response::HTTP_FORBIDDEN)
     {
-        if (! $condition) app(Core\Request::class)->abort($status);
+        if (! $condition) app(Request::class)->abort($status);
     }
 }
 
@@ -438,7 +438,7 @@ if (! function_exists('redirect')) {
 if (! function_exists('back')) {
     function back($session = [])
     {
-        Core\Response::back($session);
+        Response::back($session);
     }
 }
 
