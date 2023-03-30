@@ -35,7 +35,7 @@ if (! function_exists("run")) {
         setRequest();
         setErrors();
         setOld();
-        config();
+        config("database");
         registerServices();
         auth();
 
@@ -49,11 +49,12 @@ if (! function_exists("run")) {
  * @return void
  */
 if (! function_exists("config")) {
-    function config($key = "")
+    function config($configPath = "")
     {
-        global $config;
+        $file = explode(".", $configPath)[0];
+        $key = explode(".", $configPath)[1] ?? NULL;
         
-        if (empty($config)) $config = require appPath("config.php");
+        $config = require appPath("Config". DIRECTORY_SEPARATOR ."{$file}.php");
 
         if ($key) {
             return isset($config[$key]) ? $config[$key] : NULL;
@@ -260,7 +261,7 @@ if (! function_exists("registerServices")) {
 
         // Register DB object
         $container->bind(DB::class, function () {
-            return new DB(config("db"));
+            return new DB(config("database.connection"));
         });
 
         App::setContainer($container);

@@ -1,12 +1,12 @@
 <?php
 
-namespace Core\Middlewares;
+namespace App\Middlewares;
 
-class Auth
+class Guest
 {
     public function handle() 
     {
-        if (guest()) {
+        if (auth()) {
             redirect(route("home"));
 
             exit;

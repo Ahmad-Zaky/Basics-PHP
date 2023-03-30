@@ -1,23 +1,14 @@
 <?php
 
-namespace Core\Middlewares;
+namespace Core;
 
 use Exception;
 
 class Middleware
 {
-    public const MAP = [
-        'guest' => Guest::class,
-        'auth' => Auth::class,
-    ];
-     
-    public const DEFAULT = [
-        'csrf' => VerifyCsrfToken::class,
-    ];
-     
     public static function resolveDefault()
     {
-        foreach (Middleware::DEFAULT as $middleware) {
+        foreach (config("middleware.default") as $middleware) {
             (new $middleware)->handle();
         }
     }
@@ -26,10 +17,10 @@ class Middleware
     {
         if (! $key) return;
 
-        if (! $middleware = (Middleware::MAP[$key] ?? NULL)) {
+        if (! $middleware = (config("middleware.custom")[$key] ?? NULL)) {
             throw new Exception("'{$key}' middleware not found !");
         }
-        
+
         (new $middleware)->handle();
     }
 }

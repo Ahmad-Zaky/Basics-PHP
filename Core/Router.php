@@ -2,7 +2,7 @@
 
 namespace Core;
 
-use Core\Middlewares\Middleware;
+use Core\Middleware;
 use Core\Response;
 use Exception;
 

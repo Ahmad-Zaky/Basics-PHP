@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Middlewares;
+namespace App\Middlewares;
 
 use Exception;
 
