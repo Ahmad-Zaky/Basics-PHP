@@ -15,7 +15,7 @@ class Request
     
     public function setOldBody()
     {
-        if (in_array($this->method(), ["post", "put", "patch"])) {
+        if (in_array($this->method(), ["POST", "PUT", "PATCH"])) {
             if (! isset($_POST)) return;
 
             session()->setFlash("old", $_POST);
@@ -26,13 +26,13 @@ class Request
     {
         $this->body = [];
 
-        if ($this->method() === "get") {
+        if ($this->method() === "GET") {
             foreach ($_GET as $key => $_) {
                 $this->body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
             }
         }
 
-        if (in_array($this->method(), ["post", "put", "patch"])) {
+        if (in_array($this->method(), ["POST", "PUT", "PATCH"])) {
             foreach ($_POST as $key => $_) {
                 $this->body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
             }
@@ -61,32 +61,32 @@ class Request
 
     public function isGet() 
     {
-        return $this->method() === 'get';
+        return $this->method() === 'GET';
     }    
 
     public function isPost() 
     {
-        return $this->method() === 'post';
+        return $this->method() === 'POST';
     }
 
     public function isPut() 
     {
-        return $this->method() === 'put';
+        return $this->method() === 'PUT';
     }
 
     public function isPatch() 
     {
-        return $this->method() === 'patch';
+        return $this->method() === 'PATCH';
     }
 
     public function isDelete() 
     {
-        return $this->method() === 'delete';
+        return $this->method() === 'DELETE';
     }
     
     public function method()
     {
-        return isset($_POST["_method"]) ? strtolower($_POST["_method"]) : strtolower($_SERVER["REQUEST_METHOD"]);
+        return $this->body["_method"] ?? $_SERVER["REQUEST_METHOD"];
     }
 
     public function body() 

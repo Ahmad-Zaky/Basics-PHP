@@ -130,7 +130,7 @@ if (! function_exists('csrfInput')) {
 if (! function_exists('requestMethod')) {
     function requestMethod()
     {    
-        return strtoupper(request()->method());
+        return request()->method();
     }
 }
 
@@ -525,4 +525,45 @@ if (! function_exists('verifyHash')) {
     {
         return password_verify($text, $hash);
     }
+}
+
+if (! function_exists('methodParams')) {
+    function methodParams($className, $methodName)
+    {
+        if (! $methodName) return NULL;
+
+        $r = new ReflectionMethod($className, $methodName);
+        $params = $r->getParameters();
+        $return = [];
+        foreach ($params as $param) {
+            $return[] = [
+                "name" => $param->getName(),
+                "type" => $param->getType()->getName()
+            ];
+        }
+
+        return $return;
+    }
+}
+
+function hasParameterByType($class, $method, $type)
+{
+    if (! $params = methodParams($class, $method)) return false;
+
+    foreach ($params as $param) {
+        if ($type === $param["type"]) return true;
+    }
+
+    return false;
+}
+
+function hasParameterByName($class, $method, $name)
+{
+    $params = methodParams($class, $method);
+
+    foreach ($params as $param) {
+        if ($name === $param["name"]) return true;
+    }
+
+    return false;
 }

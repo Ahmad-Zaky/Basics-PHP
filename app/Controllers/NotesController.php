@@ -19,7 +19,7 @@ class NotesController extends Controller
         ]);        
     }
 
-    public function show($id)
+    public function show(int $id)
     {
         $note = Note::findOrFail($id);
 
@@ -51,7 +51,7 @@ class NotesController extends Controller
         redirect(route("notes.index"));
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         $note = Note::findOrFail($id);
 
@@ -64,7 +64,7 @@ class NotesController extends Controller
         ]);
     }
 
-    public function update($id)
+    public function update(int $id)
     {
         $note = Note::findOrFail($id);
 
@@ -79,7 +79,7 @@ class NotesController extends Controller
         redirect(route("notes.index"));
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $note = Note::findOrFail($id);
 

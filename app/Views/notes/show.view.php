@@ -17,7 +17,7 @@
 
                     <input type="hidden" name="_method" value="DELETE">
     
-                    <button type="submit" href="/notes/create" class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
+                    <button type="submit" href="#" class="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded">
                         Delete
                     </button>
                 </form>

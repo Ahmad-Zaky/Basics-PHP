@@ -15,15 +15,15 @@ class Validator
     public static function validate($rules) 
     {
         self::$rules = $rules;
-        
+
         foreach (self::$rules as $key => $keyRules) {            
             $value = self::getKeyValue($key);
-            
+
             self::$validated[$key] = $value;
-            
+
             self::isValid($keyRules, $key, $value);
         }
-        
+
         if (empty(self::$errors)) return true;
 
         self::passErrorsToSession();
@@ -200,7 +200,7 @@ class Validator
 
     protected static function getKeyValue(string $key)
     {
-        return trim($_POST[$key]);
+        return trim(request($key));
     }
 
     protected static function messages($rule)

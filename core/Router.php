@@ -2,9 +2,8 @@
 
 namespace Core;
 
-use Core\Middleware;
-use Core\Response;
 use Exception;
+use Core\{Middleware, Request, Response};
 
 class Router
 {
@@ -94,9 +93,13 @@ class Router
 
         $controller = new $route["controller"][0];
         $action = $route["controller"][1] ?? NULL;
+        
+        $params = hasParameterByType($route["controller"][0], $action, Request::class)
+            ? [app(Request::class), ...array_values($parameters)]
+            : array_values($parameters);
 
         $action 
-            ? $controller->{$action}(...array_values($parameters))
+            ? $controller->{$action}(...$params)
             : $controller(...array_values($parameters));
         
         exit;
