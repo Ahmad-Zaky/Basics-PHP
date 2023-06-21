@@ -35,6 +35,7 @@ class App
             Model::class => fn() => new Model,
             View::class => fn() => new View,
             Response::class => fn() => new Response,
+            Migration::class => fn() => new Migration,
         ]);
     }
 

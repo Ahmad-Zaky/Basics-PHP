@@ -86,7 +86,7 @@ class Request
     
     public function method()
     {
-        return $this->body["_method"] ?? $_SERVER["REQUEST_METHOD"];
+        return $this->body["_method"] ?? $_SERVER["REQUEST_METHOD"] ?? NULL;
     }
 
     public function body() 

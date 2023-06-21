@@ -1,6 +1,18 @@
 <?php
 
-use Core\{App, Auth, Session, Response, Router, Request, Config, View, Validator};
+use Core\{App, Auth, Session, Response, Router, Request, Config, Migration, View, Validator};
+
+/**
+ * env function
+ *
+ * @return void
+ */
+if (! function_exists("env")) {
+    function env($key = "", $default = NULL)
+    {
+        return $_ENV[$key] ?? $default;
+    }
+}
 
 /**
  * config function
@@ -8,9 +20,21 @@ use Core\{App, Auth, Session, Response, Router, Request, Config, View, Validator
  * @return void
  */
 if (! function_exists("config")) {
-    function config($keys = "")
+    function config($keys = "", $default = NULL)
     {
-        return app(Config::class)->get($keys);
+        return app(Config::class)->get($keys) ?? $default;
+    }
+}
+
+/**
+ * session function
+ *
+ * @return void
+ */
+if (! function_exists("migrate")) {
+    function migrate()
+    {
+        return app(Migration::class)->migrate();
     }
 }
 
@@ -355,6 +379,18 @@ if (! function_exists('controllersPath')) {
 }
 
 /**
+ * migrationsPath function
+ *
+ * @return string
+ */
+if (! function_exists('migrationsPath')) {
+    function migrationsPath($path = "")
+    {
+        return appPath("Migrations". DIRECTORY_SEPARATOR . $path);
+    }
+}
+
+/**
  * viewsPath function
  *
  * @return string
@@ -495,7 +531,8 @@ if (! function_exists('validate')) {
 if (! function_exists('sanitize')) {
     function sanitize($text = "")
     {
-        return htmlspecialchars($text);
+        $trimmed = trim($text);
+        return htmlspecialchars($trimmed);
     }
 }
 

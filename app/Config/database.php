@@ -2,11 +2,11 @@
 
 return [
     "connection" => [
-        "host" => "localhost",
-        "port" => "3306",
-        "user" => "root",
-        "password" => "root",
-        "dbname" => "basics",
-        "charset" => "utf8mb4",
+        "host" => env("DB_HOST", "localhost"),
+        "port" => env("DB_PORT", "3306"),
+        "dbname" => env("DB_DATABASE", "mvc"),
+        "user" => env("DB_USERNAME", "root"),
+        "password" => env("DB_PASSWORD", ""),
+        "charset" => env("DB_CHARSET", "utf8mb4"),
     ]
 ];

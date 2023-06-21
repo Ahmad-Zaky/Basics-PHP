@@ -6,7 +6,7 @@ use PDO;
 
 class Migration
 {
-    public array $migrations;
+    public array $migrations = [];
 
     public DB $db;
 
@@ -95,6 +95,8 @@ class Migration
     
     public function dropAllTables()
     {
+        $this->log("Dropping tables ...");
+
         $this->db->raw("SET FOREIGN_KEY_CHECKS = 0");
         
         $tables = $this->tables();
@@ -131,22 +133,23 @@ class Migration
 
     protected function upMigration()
     {
-        $files = scandir(App::$ROOT_DIR . "/migrations");
+        $files = scandir(migrationsPath());
         $notMigrated = array_diff($files, $this->migrations);
 
         $createdMigrations = [];
         foreach ($notMigrated as $migration) {
             if (in_array($migration, [".", ".."])) continue;
 
-            require App::$ROOT_DIR . '/migrations/' . $migration;
+            require migrationsPath() . $migration;
 
-            $class = pathinfo($migration, PATHINFO_FILENAME);
+            $file = pathinfo($migration, PATHINFO_FILENAME);
+            $class = '\App\Migrations\\'.$file;
             
-            $this->log("Creating migration {$class}");
+            $this->log("Creating migration {$file}");
             
             (new $class)->up();
             
-            $this->log("Created migration {$class}");
+            $this->log("Created migration {$file}");
 
             $createdMigrations[] = $migration;
         }
@@ -163,20 +166,25 @@ class Migration
     {
         $this->cleanMigrations();
         
-        $migrations = array_reverse(scandir(App::$ROOT_DIR . "/migrations"));
+        $migrations = array_reverse(scandir(migrationsPath()));
 
         foreach ($migrations as $migration) {
             if (in_array($migration, [".", ".."])) continue;
 
-            require App::$ROOT_DIR . '/migrations/' . $migration;
+            require migrationsPath() . $migration;
 
-            $class = pathinfo($migration, PATHINFO_FILENAME);
-            
-            $this->log("Down migration {$class} Started");
-            
+            $file = pathinfo($migration, PATHINFO_FILENAME);
+            $class = '\App\Migrations\\'.$file;
+
+            $this->log("Down migration {$file} Started");
+
+            $this->db->raw("SET FOREIGN_KEY_CHECKS = 0");
+
             (new $class)->down();
             
-            $this->log("Down migration {$class} Ended");
+            $this->db->raw("SET FOREIGN_KEY_CHECKS = 1");
+            
+            $this->log("Down migration {$file} Ended");
 
             $createdMigrations[] = $migration;
         }
