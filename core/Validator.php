@@ -51,7 +51,7 @@ class Validator
             'required' => static function ($rule, $key, $value) {
                 if (self::required($value)) return true;
     
-                self::addError($rule, $key, [":key" => $key]);
+                self::addError($rule, $key, [":key" => formatText($key)]);
                 
                 return false;
             },
@@ -60,7 +60,7 @@ class Validator
     
                 if (self::max($value, $option)) return true;                
                 
-                self::addError($rule, $key, [":key" => $key, ":max" => $option]);
+                self::addError($rule, $key, [":key" => formatText($key), ":max" => $option]);
                 
                 return false;
             },
@@ -69,7 +69,7 @@ class Validator
     
                 if (self::min($value, $option)) return true;                
                 
-                self::addError($rule, $key, [":key" => $key, ":min" => $option]);
+                self::addError($rule, $key, [":key" => formatText($key), ":min" => $option]);
                 
                 return false;
             },
@@ -96,7 +96,7 @@ class Validator
     
                 if (self::exists($value, $option)) return true;                
                 
-                self::addError($rule, $key, [":key" => $key]);
+                self::addError($rule, $key, [":key" => formatText($key)]);
                 
                 return false;
             },
@@ -105,7 +105,7 @@ class Validator
     
                 if (self::unique($value, $option)) return true;                
                 
-                self::addError($rule, $key, [":key" => $key]);
+                self::addError($rule, $key, [":key" => formatText($key)]);
                 
                 return false;
             },
@@ -114,7 +114,7 @@ class Validator
     
                 if (self::confirmed($key, $value)) return true;                
                 
-                self::addError($rule, $key, [":key1" => "{$key}_confirmation", ":key2" => $key]);
+                self::addError($rule, $key, [":key1" => formatText("{$key}_confirmation"), ":key2" => formatText($key)]);
                                 
                 return false;
             },

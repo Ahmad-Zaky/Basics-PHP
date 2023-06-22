@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Basics - <?= $heading ?></title>
+    <title><?= config('app.name') ?> - <?= $heading ?></title>
 
     <!-- <script sync src="https://cdn.tailwindcss.com?plugins=forms"></script> -->
     <!-- <script sync src="/assets/libs/tailwind/3.2.6/scripts.js"></script> -->

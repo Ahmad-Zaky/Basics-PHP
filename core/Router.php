@@ -161,10 +161,12 @@ class Router
     {
         foreach (self::$routes as $route) {
             if ($route["name"] === $name) {
-
                 self::validateParams(self::routeParameters($route["uri"]), $params);
 
-                return self::bindParams(self::getRouteUri($route["uri"]), $params);
+                $boundUri = self::bindParams(self::getRouteUri($route["uri"]), $params);
+                $queryString = self::toQueryString($params, self::routeParameters($route["uri"]));
+
+                return  $boundUri . $queryString;
             }
         }
 
@@ -244,6 +246,14 @@ class Router
 
             throw new Exception("'{$uriParam}' route parameter is missing !");
         }
+    }
+
+    public static function toQueryString(array $params = [], $except = []) {
+        $params = array_filter($params, function($key) use ($except) {
+            return !in_array($key, $except);
+        }, ARRAY_FILTER_USE_KEY);
+        
+        return '?' . http_build_query(array_diff_key($params, $except));
     }
 
     public function urlIs($value)

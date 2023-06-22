@@ -441,6 +441,20 @@ if (! function_exists('authorize')) {
 }
 
 /**
+ * formatText function
+ * @param string $text
+ * @param char $delimiter
+ *
+ * @return string
+ */
+if (! function_exists('formatText')) {
+    function formatText($text, $delimiter = '_')
+    {
+        return ucwords(str_replace($delimiter, ' ', $text));
+    }
+}
+
+/**
  * route function
  * @param string $route
  *
