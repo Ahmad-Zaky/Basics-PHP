@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Exceptions\ModelNotFoundException;
+
 class Model
 {
     protected $table = "";
@@ -44,6 +46,11 @@ class Model
     public function getAttributes()
     {
         return $this->attributes;
+    }
+
+    public function toArray()
+    {
+        return $this->getAttributes();
     }
 
     public function setAttributes($data) 
@@ -170,7 +177,7 @@ class Model
 
     public function firstOrFail()
     {
-        return $this->buildModels($this->query->get())[0] ?? abort();
+        return $this->buildModels($this->query->get())[0] ?? throw new ModelNotFoundException;
     }
 
     public function query($statement, $params)

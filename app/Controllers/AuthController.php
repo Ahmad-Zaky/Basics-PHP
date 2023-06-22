@@ -16,7 +16,7 @@ class AuthController extends Controller
 
     public function signin()
     {
-        if (validate(User::$rules["signin"])) {
+        if (validate(User::rules()["signin"])) {
             $data = Validator::validated();
 
             $user = User::findByEmail($data["email"]);
@@ -42,7 +42,7 @@ class AuthController extends Controller
 
     public function signup()
     {
-        if (validate(User::$rules["signup"])) {
+        if (validate(User::rules()["signup"])) {
             $data = Validator::validated();
 
             $user = User::create([

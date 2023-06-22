@@ -42,7 +42,7 @@ class NotesController extends Controller
 
     public function store()
     {
-        if (validate(Note::$rules["store"])) {
+        if (validate(Note::rules()["store"])) {
             $data = Validator::validated();
 
             Note::create(array_merge($data, ["user_id" => auth("id")]));
@@ -70,7 +70,7 @@ class NotesController extends Controller
 
         authorize($note->user_id === auth("id"));
 
-        if (validate(Note::$rules["update"])) {
+        if (validate(Note::rules()["update"])) {
             $data = Validator::validated();
             
             $note->update($data);

@@ -2,11 +2,15 @@
 
 namespace Core;
 
+use Core\Exceptions\ModelNotFoundException;
+use Exception;
 use PDO;
-use Core\Response;
+use PDOException;
 
 class DB
 {
+    private static $instance = null;
+
     protected $dsn;
     
     protected $connection;
@@ -17,13 +21,32 @@ class DB
     
     protected $columns;
 
-    public function __construct($config)
+    private function __construct(array $config)
     {
-        $this->dsn = "mysql:". http_build_query($config, "", ";");
+        try {
+            $this->dsn = "mysql:". http_build_query($config, "", ";");
+        
+            $this->connection = new PDO($this->dsn, $config["user"], $config["password"], [
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+        } catch (PDOException $e) {
+            abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+        } catch (Exception $e) {
+            abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+        }
+    }
 
-        $this->connection = new PDO($this->dsn, $config["user"], $config["password"], [
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
+    public static function getInstance(array $config)
+    {
+        if (! self::$instance) {
+            self::$instance = new self($config);
+        }
+
+        return self::$instance;
+    }
+    
+    public function getConnection() {
+        return $this->connection;
     }
 
     public function raw($query)
@@ -55,7 +78,7 @@ class DB
     public function findOrFail($options = PDO::FETCH_DEFAULT) 
     {
         if (! $item = $this->find($options)) {
-            abort(Response::HTTP_NOT_FOUND);
+            throw new ModelNotFoundException();
         }
 
         return $item;
@@ -96,5 +119,20 @@ class DB
     public function lastId()
     {
         return $this->connection->lastInsertId();
+    }
+
+    final public function __clone() {
+        throw new Exception("Can't clone a singleton");
+    }
+
+    final public function __wakeup()
+    {
+        throw new Exception("Can't clone a singleton");
+    }
+
+    final public function __destruct()
+    {
+        $this->connection = null;
+        self::$instance = null;
     }
 }

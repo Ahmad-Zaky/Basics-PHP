@@ -1,6 +1,7 @@
 <?php
 
 use Core\{App, Auth, Session, Response, Router, Request, Config, Migration, View, Validator};
+use Core\Exceptions\ForbiddenException;
 
 /**
  * env function
@@ -107,6 +108,36 @@ if (! function_exists("request")) {
         }
 
         return $request;
+    }
+}
+    
+/**
+ * response function
+ *
+ * @return void
+ */
+if (! function_exists("response")) {
+    function response()
+    {
+        return app(Response::class);
+    }
+}
+
+/**
+ * cookie function
+ *
+ * @return void
+ */
+if (! function_exists("cookie")) {
+    function cookie($key = "")
+    {
+        $cookie = app(Cookie::class);
+
+        if ($key) {
+            return $cookie->get($key) ?? NULL;
+        }
+
+        return $cookie;
     }
 }
 
@@ -311,9 +342,9 @@ if (! function_exists('urlIn')) {
  * @return void
  */
 if (! function_exists('abort')) {
-    function abort(int $code = 404)
+    function abort(int $code = 404, string $message = NULL)
     {
-        app(Request::class)->abort($code);
+        app(Response::class)->abort($code, $message);
     }
 }
 
@@ -434,9 +465,9 @@ if (! function_exists('errorsPath')) {
  * @return void
  */
 if (! function_exists('authorize')) {
-    function authorize($condition, $status = Response::HTTP_FORBIDDEN)
+    function authorize($condition)
     {
-        if (! $condition) app(Request::class)->abort($status);
+        if (! $condition) throw new ForbiddenException;
     }
 }
 

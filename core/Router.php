@@ -4,6 +4,7 @@ namespace Core;
 
 use Exception;
 use Core\{Middleware, Request, Response};
+use Core\Exceptions\RouteNotFoundException;
 
 class Router
 {
@@ -64,7 +65,7 @@ class Router
         self::loadRoutes();
 
         if (! $route = self::find()) {
-            abort(Response::HTTP_NOT_FOUND);
+            throw new RouteNotFoundException;
         }
 
         Middleware::resolveDefault();
@@ -252,7 +253,11 @@ class Router
         $params = array_filter($params, function($key) use ($except) {
             return !in_array($key, $except);
         }, ARRAY_FILTER_USE_KEY);
-        
+
+        if (empty($params)) {
+            return "";
+        }
+
         return '?' . http_build_query(array_diff_key($params, $except));
     }
 

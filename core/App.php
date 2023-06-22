@@ -2,6 +2,11 @@
 
 namespace Core;
 
+use Exception;
+use Core\Exceptions\ForbiddenException;
+use Core\Exceptions\ModelNotFoundException;
+use Core\Exceptions\RouteNotFoundException;
+
 class App
 {
     public static string $ROOT_DIR;
@@ -24,8 +29,9 @@ class App
 
         $this->singletonList([
             Config::class => fn() => new Config,
-            DB::class => fn() => new DB(config("database.connection")),
+            DB::class => fn() => DB::getInstance(config("database.connection")),
             Session::class => fn() => new Session,
+            Cookie::class => fn() => new Cookie,
             Auth::class => fn() => new Auth,
             Router::class => fn() => new Router,
             Request::class => fn() => new Request,
@@ -41,7 +47,17 @@ class App
 
     public function run()
     {
-        Router::route();
+        try {
+            Router::route();
+        } catch (ForbiddenException $e) {
+            abort(Response::HTTP_FORBIDDEN, $e->getMessage());
+        } catch (ModelNotFoundException $e) {
+            abort(Response::HTTP_NOT_FOUND, $e->getMessage());
+        } catch (RouteNotFoundException $e) {
+            abort(Response::HTTP_NOT_FOUND, $e->getMessage());
+        } catch (Exception $e) {
+            abort(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+        }
     }
 
     public static function setContainer($container) 

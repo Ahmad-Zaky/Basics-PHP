@@ -33,7 +33,16 @@ class Validator
     
     public static function isValid($rules, $key, $value)
     {
-        foreach (explode("|", $rules) as $rule) {
+        $rules = is_array($rules) ? $rules : explode("|", $rules);
+        foreach ($rules as $rule) {
+            if (is_callable($rule)) {
+                ($rule)($key, $value, function (string $message, array $placeHolders = []) use ($key) {
+                    self::addError($message, $key, $placeHolders);
+                });
+
+                continue;
+            }
+
             $option = isset(explode(":", $rule)[1]) ? explode(":", $rule)[1] : NULL;
             $rule = explode(":", $rule)[0];
             
@@ -51,7 +60,7 @@ class Validator
             'required' => static function ($rule, $key, $value) {
                 if (self::required($value)) return true;
     
-                self::addError($rule, $key, [":key" => formatText($key)]);
+                self::addRuleError($rule, $key, [":key" => formatText($key)]);
                 
                 return false;
             },
@@ -60,7 +69,7 @@ class Validator
     
                 if (self::max($value, $option)) return true;                
                 
-                self::addError($rule, $key, [":key" => formatText($key), ":max" => $option]);
+                self::addRuleError($rule, $key, [":key" => formatText($key), ":max" => $option]);
                 
                 return false;
             },
@@ -69,7 +78,7 @@ class Validator
     
                 if (self::min($value, $option)) return true;                
                 
-                self::addError($rule, $key, [":key" => formatText($key), ":min" => $option]);
+                self::addRuleError($rule, $key, [":key" => formatText($key), ":min" => $option]);
                 
                 return false;
             },
@@ -78,7 +87,7 @@ class Validator
     
                 if (self::email($value)) return true;                
     
-                self::addError($rule, $key);
+                self::addRuleError($rule, $key);
                     
                 return false;
             },
@@ -87,7 +96,7 @@ class Validator
     
                 if (self::url($value)) return true;                
                 
-                self::addError($rule, $key);
+                self::addRuleError($rule, $key);
                 
                 return false;
             },
@@ -96,7 +105,7 @@ class Validator
     
                 if (self::exists($value, $option)) return true;                
                 
-                self::addError($rule, $key, [":key" => formatText($key)]);
+                self::addRuleError($rule, $key, [":key" => formatText($key)]);
                 
                 return false;
             },
@@ -105,7 +114,7 @@ class Validator
     
                 if (self::unique($value, $option)) return true;                
                 
-                self::addError($rule, $key, [":key" => formatText($key)]);
+                self::addRuleError($rule, $key, [":key" => formatText($key)]);
                 
                 return false;
             },
@@ -114,7 +123,7 @@ class Validator
     
                 if (self::confirmed($key, $value)) return true;                
                 
-                self::addError($rule, $key, [":key1" => formatText("{$key}_confirmation"), ":key2" => formatText($key)]);
+                self::addRuleError($rule, $key, [":key1" => formatText("{$key}_confirmation"), ":key2" => formatText($key)]);
                                 
                 return false;
             },
@@ -209,12 +218,15 @@ class Validator
             self::$messages = require corePath("error_messages.php");
         }
 
-        return self::$messages[$rule];
+        return self::$messages[$rule] ?? NULL;
     }
 
-    protected static function getMessage($rule, $placeHolders = [])
+    protected static function getRuleMessage($rule, $placeHolders = [])
     {
-        $errorMsg = self::messages($rule);
+        if (! $errorMsg = self::messages($rule)) {
+            return '';
+        }
+
         foreach($placeHolders as $placeHolder => $val){
             $errorMsg = str_replace($placeHolder, $val, $errorMsg);
         }
@@ -222,9 +234,27 @@ class Validator
         return $errorMsg;
     }
 
-    public static function addError($rule, $key, $placeHolders = []) 
+    public static function addRuleError($rule, $key, $placeHolders = []) 
     {
-        self::$errors[$key][$rule] = self::getMessage($rule, $placeHolders);
+        self::$errors[$key][$rule] = self::getRuleMessage($rule, $placeHolders);
+    }
+
+    protected static function getMessage($errorMsg, $placeHolders = [])
+    {
+        if (! $errorMsg) {
+            return '';
+        }
+
+        foreach($placeHolders as $placeHolder => $val){
+            $errorMsg = str_replace($placeHolder, $val, $errorMsg);
+        }
+
+        return $errorMsg;
+    }
+
+    public static function addError($message, $key, $placeHolders = []) 
+    {
+        self::$errors[$key][] = self::getMessage($message, $placeHolders);
     }
 
     protected static function passErrorsToSession() {

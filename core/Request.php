@@ -94,12 +94,27 @@ class Request
         return $this->body;
     }
 
-    public function abort(int $code = 404) 
+    public function wantsJson()
     {
-        http_response_code($code);
+        $acceptHeader = $_SERVER['ACCEPT'] ?? $_SERVER['HTTP_ACCEPT'] ?? '';
+        return (
+            strpos($acceptHeader, '/json') !== false ||
+            strpos($acceptHeader, '+json') !== false
+        );
+    }
 
-        require view("errors.{$code}");
+    public function isJson()
+    {
+        $contentHeader = $_SERVER['CONTENT_TYPE'] ?? '';
 
-        exit;
+        return (
+            strpos($contentHeader, '/json') !== false ||
+            strpos($contentHeader, '+json') !== false
+        );
+    }
+
+    public function cookie($key) 
+    {
+        return cookie()->get($key);
     }
 }

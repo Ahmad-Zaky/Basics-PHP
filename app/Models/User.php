@@ -8,17 +8,27 @@ class User extends Model
 {
     protected $table = "users";
 
-    public static $rules = [
-        "signin" => [
-            "email" => "required|email",
-            "password" => "required",
-        ],
-        "signup" => [
-            "name" => "required",
-            "email" => "required|email|unique:users,email",
-            "password" => "required|confirmed|min:6",
-        ],
-    ];
+    public static function rules(string $key = NULL)
+    {
+        $rules = [
+            "signin" => [
+                "email" => "required|email",
+                "password" => "required",
+            ],
+            "signup" => [
+                "name" => "required",
+                "email" => ["required", "email", "unique:users,email", function ($attribute, $value, $fail) {
+                    $email = explode('@', $value);
+                    if (strpos(($email[1] ?? ""), "gmail.com") === false) {
+                        $fail("Email should be a gmail email address.");
+                    }
+                }],
+                "password" => "required|confirmed|min:6",
+            ],
+        ];
+
+        return empty($key) ? $rules : ($rules[$key] ?? []);
+    }
 
     public static function findByEmail($email) 
     {
