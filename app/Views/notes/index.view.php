@@ -14,7 +14,11 @@
             <?php foreach ($notes as $note): ?>
                 <li>
                     <a href="<?= route("notes.show", ["id" => $note->id]) ?>" class="text-blue-500 hover:underline">
-                        <p class="ellipsis"><?= sanitize($note->body) ?></p>
+                        <p 
+                            class="ellipsis <?php if ($note->completed): ?> text-gray-500 <?php endif; ?>"
+                        >
+                            <?= sanitize($note->body) ?>
+                        </p>
                     </a>
                 </li>
             <?php endforeach; ?>

@@ -45,7 +45,9 @@ class NotesController extends Controller
         if (validate(Note::rules()["store"])) {
             $data = Validator::validated();
 
-            Note::create(array_merge($data, ["user_id" => auth("id")]));
+            $note = Note::create(array_merge($data, ["user_id" => auth("id")]));
+
+            event()->trigger('notes.after.saving', [$note]);
         }
 
         redirect(route("notes.index"));
@@ -72,8 +74,10 @@ class NotesController extends Controller
 
         if (validate(Note::rules()["update"])) {
             $data = Validator::validated();
-            
+
             $note->update($data);
+
+            event()->trigger('notes.after.saving', [$note]);
         }
 
         redirect(route("notes.index"));

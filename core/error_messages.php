@@ -8,5 +8,6 @@ return [
     "url" => "Invalid url",
     "exists" => ":key Not Found",
     "unique" => ":key already exists",
+    "in" => ":key has invalid value",
     "confirmed" => ":key1 doesn't match with :key2",
 ];

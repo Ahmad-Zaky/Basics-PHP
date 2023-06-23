@@ -12,10 +12,12 @@ class Note extends Model
     {
         $rules = [
             "store" => [
-                "body" => "required|max:500|min:50"
+                "body" => "required|max:500|min:50",
+                "completed" => "in:1,0",
             ],
             "update" => [
-                "body" => "required|max:500|min:50"
+                "body" => "required|max:500|min:50",
+                "completed" => "in:1,0"
             ],
         ];
 

@@ -45,7 +45,7 @@ class Validator
 
             $option = isset(explode(":", $rule)[1]) ? explode(":", $rule)[1] : NULL;
             $rule = explode(":", $rule)[0];
-            
+
             $caller = isset(self::validations()[$rule]) ? self::validations()[$rule] : NULL;
             
             if ($caller) $caller($rule, $key, $value, $option);
@@ -113,6 +113,15 @@ class Validator
             'unique' => static function ($rule, $key, $value, $option) {
     
                 if (self::unique($value, $option)) return true;                
+                
+                self::addRuleError($rule, $key, [":key" => formatText($key)]);
+                
+                return false;
+            },
+
+            'in' => static function ($rule, $key, $value, $option) {
+    
+                if (self::in($value, $option)) return true;                
                 
                 self::addRuleError($rule, $key, [":key" => formatText($key)]);
                 
@@ -194,6 +203,11 @@ class Validator
         $item = $db->query($q, $params)->find();
 
         return $item === false;
+    }
+
+    public static function in($value, $option)
+    {
+        return empty($value) || in_array($value, explode(",", $option));
     }
 
     public static function confirmed($key, $value)

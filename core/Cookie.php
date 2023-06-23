@@ -35,8 +35,9 @@ class Cookie
 
     public function expire($key) 
     {
-        isset($_COOKIE[$key]) ? unset($_COOKIE[$key]) : NULL;
-
-		return $this->set($key, '', -1);
+        if (isset($_COOKIE[$key])) {
+            unset($_COOKIE[$key]);
+            return $this->set($key, '', -1);   
+        }
     }
 }

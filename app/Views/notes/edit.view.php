@@ -31,15 +31,49 @@
                             ><?= old("body", $note->body) ?></textarea>
 
                             <?php if (hasErrors("body")): ?>
-                                <ul>
-                                    <?php foreach (errors("body") as $error): ?>
-                                        <li class="text-red-500 text-xs mt-2"><?= $error ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
+                                <?php view("partials.errors", ["formErrors" => errors("body")]); ?>
                             <?php endif; ?>
 
                         </div>
                     </div>
+
+                    <div>
+                        <div class="flex items-center mb-4">
+
+                            <input
+                                type="hidden"
+                                id="completed-hidden"
+                                name="completed"
+                                value="<?= old("completed", $note->completed) ?>"
+                            />
+
+                            <input
+                                <?php if(old("completed", $note->completed)): ?>
+                                    checked
+                                <?php endif; ?>
+                                id="completed"
+                                type="checkbox"
+                                value="<?= old("completed", $note->completed) ?>"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="completed" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Completed</label>
+                        </div>
+
+                        <?php if (hasErrors("completed")): ?>
+                            <?php view("partials.errors", ["formErrors" => errors("completed")]); ?>
+                        <?php endif; ?>
+                            
+                    </div>
+
+                    <?php if ($note->completed): ?>
+                        <div>
+                            <div class="flex items-center mb-4">
+                                <label for="completed" class="text-sm font-medium text-gray-900 dark:text-gray-300">Completed At:&nbsp;</label>
+                                <small><?= $note->completed_at ?></small>
+                            </div>        
+                        </div>
+                    <?php endif; ?>
+
                 </div>
                 <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
                     <a href="<?= route("notes.index") ?>" class="inline-flex justify-center rounded-md bg-gray-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500">Cancel</a>

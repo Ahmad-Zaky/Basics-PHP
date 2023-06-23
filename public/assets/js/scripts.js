@@ -34,3 +34,9 @@ function signout(e) {
 
     e.target.closest("form").submit();
 }
+
+document.querySelector("#completed")
+    .addEventListener('change', function() {
+        const completed = document.querySelector("#completed-hidden");
+        completed.value = this.checked ? 1 : 0;
+    });

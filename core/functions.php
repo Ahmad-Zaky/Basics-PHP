@@ -1,6 +1,19 @@
 <?php
 
-use Core\{App, Auth, Session, Response, Router, Request, Config, Migration, View, Validator};
+use Core\{
+    App,
+    Auth,
+    Session,
+    Response,
+    Router,
+    Request,
+    Config,
+    Event,
+    Migration,
+    View,
+    Validator
+};
+
 use Core\Exceptions\ForbiddenException;
 
 /**
@@ -108,6 +121,18 @@ if (! function_exists("request")) {
         }
 
         return $request;
+    }
+}
+
+/**
+ * event function
+ *
+ * @return void
+ */
+if (! function_exists("event")) {
+    function event()
+    {
+        return app(Event::class);
     }
 }
     
@@ -422,6 +447,18 @@ if (! function_exists('migrationsPath')) {
 }
 
 /**
+ * providersPath function
+ *
+ * @return string
+ */
+if (! function_exists('providersPath')) {
+    function providersPath($path = "")
+    {
+        return appPath("Providers". DIRECTORY_SEPARATOR . $path);
+    }
+}
+
+/**
  * viewsPath function
  *
  * @return string
@@ -628,24 +665,35 @@ if (! function_exists('methodParams')) {
     }
 }
 
-function hasParameterByType($class, $method, $type)
-{
-    if (! $params = methodParams($class, $method)) return false;
-
-    foreach ($params as $param) {
-        if ($type === $param["type"]) return true;
+if (! function_exists('hasParameterByType')) {
+    function hasParameterByType($class, $method, $type)
+    {
+        if (! $params = methodParams($class, $method)) return false;
+    
+        foreach ($params as $param) {
+            if ($type === $param["type"]) return true;
+        }
+    
+        return false;
     }
-
-    return false;
 }
 
-function hasParameterByName($class, $method, $name)
-{
-    $params = methodParams($class, $method);
-
-    foreach ($params as $param) {
-        if ($name === $param["name"]) return true;
+if (! function_exists('hasParameterByName')) {
+    function hasParameterByName($class, $method, $name)
+    {
+        $params = methodParams($class, $method);
+    
+        foreach ($params as $param) {
+            if ($name === $param["name"]) return true;
+        }
+    
+        return false;
     }
+}
 
-    return false;
+if (! function_exists('now')) {
+    function now($format = 'Y-m-d H:i:s')
+    {
+        return date($format);
+    }
 }

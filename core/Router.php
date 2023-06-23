@@ -74,12 +74,29 @@ class Router
             Middleware::resolve($middleware);
         }
 
+        self::registerProviders();
+
         self::execute($route);
     }
 
     public static function loadRoutes() 
     {
         require_once appPath('routes.php');
+    }
+
+    public static function registerProviders() 
+    {
+        $providers = scandir(providersPath());
+        foreach ($providers as $provider) {
+            if (in_array($provider, [".", ".."])) continue;
+
+            require providersPath() . $provider;
+
+            $file = pathinfo($provider, PATHINFO_FILENAME);
+            $class = '\App\Providers\\'.$file;
+            
+            (new $class)->register();
+        }
     }
 
     public static function execute($route)

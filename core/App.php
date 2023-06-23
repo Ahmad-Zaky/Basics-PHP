@@ -42,6 +42,7 @@ class App
             View::class => fn() => new View,
             Response::class => fn() => new Response,
             Migration::class => fn() => new Migration,
+            Event::class => fn() => new Event,
         ]);
     }
 

@@ -93,7 +93,6 @@ class Response
         header("Content-type: application/json");
 
         echo $response;
-        exit;
     }
 
     public function abort(int $code = 404, string $message = NULL)
@@ -104,8 +103,6 @@ class Response
         }
 
         $this->json(["message" => $message]);
-
-        exit;
     }
 
     public function cookie($key, $value, $expire = 0, $options = []) 

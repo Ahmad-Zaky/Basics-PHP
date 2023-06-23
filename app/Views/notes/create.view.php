@@ -34,6 +34,35 @@
 
                         </div>
                     </div>
+
+                    <div>
+                        <div class="flex items-center mb-4">
+
+                            <input
+                                type="hidden"
+                                id="completed-hidden"
+                                name="completed"
+                                value="<?= old("completed", false) ?>"
+                            />
+
+                            <input
+                                <?php if(old("completed", false)): ?>
+                                    checked
+                                <?php endif; ?>
+                                id="completed"
+                                type="checkbox"
+                                value="<?= old("completed", false) ?>"
+                                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            >
+                            <label for="completed" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Completed</label>
+                        </div>
+
+                        <?php if (hasErrors("completed")): ?>
+                            <?php view("partials.errors", ["formErrors" => errors("completed")]); ?>
+                        <?php endif; ?>
+                            
+                    </div>
+
                 </div>
                 <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
                     <button type="submit" class="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Save</button>

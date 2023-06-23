@@ -7,6 +7,16 @@
         <p class="mb-6">
             <a href="<?= route("notes.index") ?>" class="text-blue-500 underline">Go Back ...</a>
         </p>
+
+        <?php if ($note->completed): ?>
+            <div>
+                <div class="flex items-center mb-4">
+                    <label for="completed" class="text-sm font-medium text-gray-900 dark:text-gray-300">Completed At:&nbsp;</label>
+                    <small><?= $note->completed_at ?></small>
+                </div>        
+            </div>
+        <?php endif; ?>
+
         <p><?= sanitize($note->body) ?></p>
 
         <div class="mt-6 flex">
