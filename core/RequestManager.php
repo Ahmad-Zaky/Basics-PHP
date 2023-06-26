@@ -2,7 +2,9 @@
 
 namespace Core;
 
-class Request
+use Core\Contracts\Request;
+
+class RequestManager implements Request
 {
     protected array $body;
 
@@ -13,7 +15,7 @@ class Request
         $this->setOldBody();
     }
     
-    public function setOldBody()
+    public function setOldBody(): void
     {
         if (in_array($this->method(), ["POST", "PUT", "PATCH"])) {
             if (! isset($_POST)) return;
@@ -22,7 +24,7 @@ class Request
         }
     }
 
-    public function setBody() 
+    public function setBody(): void
     {
         $this->body = [];
 
@@ -39,17 +41,17 @@ class Request
         }
     }
 
-    public function get($key) 
+    public function get(string $key): string
     {
         return $this->body[$key] ?? NULL;
     }
 
-    public function set($key, $value)
+    public function set(string $key, string $value): void
     {
         $this->body[$key] = $value;
     }
 
-    public function path() 
+    public function path(): string
     {
         $path = $_SERVER["REQUEST_URI"] ?? '/';
         if ($position = strpos($path, '?') === false) {
@@ -59,42 +61,42 @@ class Request
         return substr($path, 0, $position);
     }
 
-    public function isGet() 
+    public function isGet(): bool
     {
         return $this->method() === 'GET';
     }    
 
-    public function isPost() 
+    public function isPost(): bool
     {
         return $this->method() === 'POST';
     }
 
-    public function isPut() 
+    public function isPut(): bool
     {
         return $this->method() === 'PUT';
     }
 
-    public function isPatch() 
+    public function isPatch(): bool
     {
         return $this->method() === 'PATCH';
     }
 
-    public function isDelete() 
+    public function isDelete(): bool
     {
         return $this->method() === 'DELETE';
     }
-    
-    public function method()
+
+    public function method(): string|NULL
     {
         return $this->body["_method"] ?? $_SERVER["REQUEST_METHOD"] ?? NULL;
     }
 
-    public function body() 
+    public function body(): array
     {
         return $this->body;
     }
 
-    public function wantsJson()
+    public function wantsJson(): bool
     {
         $acceptHeader = $_SERVER['ACCEPT'] ?? $_SERVER['HTTP_ACCEPT'] ?? '';
         return (
@@ -103,7 +105,7 @@ class Request
         );
     }
 
-    public function isJson()
+    public function isJson(): bool
     {
         $contentHeader = $_SERVER['CONTENT_TYPE'] ?? '';
 
@@ -113,7 +115,7 @@ class Request
         );
     }
 
-    public function cookie($key) 
+    public function cookie($key): string
     {
         return cookie()->get($key);
     }

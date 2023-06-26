@@ -3,10 +3,7 @@
 use Core\{
     App,
     Session,
-    Response,
     Router,
-    Request,
-    Event,
     Migration,
     View,
     Validator
@@ -16,7 +13,9 @@ use Core\Contracts\{
     Cookie,
     Config,
     Auth,
-    DB
+    Response,
+    Request,
+    Event
 };
 
 use Core\Exceptions\ForbiddenException;
@@ -549,7 +548,7 @@ if (! function_exists('route')) {
 if (! function_exists('redirect')) {
     function redirect($route = "/", $session = [])
     {
-        Response::redirect($route, $session);
+        app(Response::class)->redirect($route, $session);
     }
 }
 

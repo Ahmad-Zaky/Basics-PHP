@@ -2,7 +2,9 @@
 
 namespace Core;
 
-class Response
+use Core\Contracts\Response;
+
+class ResponseManager implements Response
 {
     public const HTTP_CONTINUE = 100;
     public const HTTP_SWITCHING_PROTOCOLS = 101;
@@ -68,7 +70,7 @@ class Response
     public const HTTP_NOT_EXTENDED = 510;                                                // RFC2774
     public const HTTP_NETWORK_AUTHENTICATION_REQUIRED = 511;                             // RFC6585
 
-    public static function redirect($route, $session = []) 
+    public static function redirect(string $route, array $session = []): void
     {
         foreach ($session as $key => $value) $_SESSION[$key] = $value;
 
@@ -77,7 +79,7 @@ class Response
         exit();
     }
 
-    public static function back($session = [])
+    public static function back(array $session = []): void
     {
         foreach ($session as $key => $value) $_SESSION[$key] = $value;
 
@@ -85,8 +87,8 @@ class Response
 
         exit();
     }
-    
-    public static function json($data = [])
+
+    public static function json(array $data = []): void
     {
         $response = json_encode($data);
 
@@ -95,7 +97,7 @@ class Response
         echo $response;
     }
 
-    public function abort(int $code = 404, string $message = NULL)
+    public function abort(int $code = 404, string $message = NULL): void
     {
         http_response_code($code);
         if (request()->wantsJson()) {
@@ -105,12 +107,12 @@ class Response
         $this->json(["message" => $message]);
     }
 
-    public function cookie($key, $value, $expire = 0, $options = []) 
+    public function cookie(string  $key, mixed $value, int $expire = 0, array $options = []): bool
     {
         return cookie()->set($key, $value, $expire, $options);
     }
 
-    public function withoutCookie($key) 
+    public function withoutCookie(string $key): bool
     {
         return cookie()->destroy($key);
     }

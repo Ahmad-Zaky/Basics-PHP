@@ -2,18 +2,19 @@
 
 namespace Core;
 
+use Core\Contracts\Middleware;
 use Exception;
 
-class Middleware
+class MiddlewareManager implements Middleware
 {
-    public static function resolveDefault()
+    public function resolveDefault(): void
     {
         foreach (config("middleware.default") as $middleware) {
             (new $middleware)->handle();
         }
     }
-     
-    public static function resolve($key)
+
+    public function resolve($key): void
     {
         if (! $key) return;
 

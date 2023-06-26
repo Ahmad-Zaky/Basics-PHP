@@ -8,7 +8,11 @@ use Core\Contracts\{
     Auth,
     Config,
     Cookie,
-    DB
+    DB,
+    Event,
+    Middleware,
+    Response,
+    Request
 };
 
 use Core\Exceptions\{
@@ -44,15 +48,15 @@ class App
             Cookie::class => fn() => new CookieManager,
             Auth::class => fn() => new AuthenticationManager,
             Router::class => fn() => new Router,
-            Request::class => fn() => new Request,
+            Request::class => fn() => new RequestManager,
             Validator::class => fn() => new Validator,
-            Middleware::class => fn() => new Middleware,
+            Middleware::class => fn() => new MiddlewareManager,
             Controller::class => fn() => new Controller,
             Model::class => fn() => new Model,
             View::class => fn() => new View,
-            Response::class => fn() => new Response,
+            Response::class => fn() => new ResponseManager,
             Migration::class => fn() => new Migration,
-            Event::class => fn() => new Event,
+            Event::class => fn() => new EventManager,
         ]);
     }
 

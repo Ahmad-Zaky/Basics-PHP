@@ -3,7 +3,7 @@
 namespace Core;
 
 use Exception;
-use Core\{Middleware, Request, Response};
+use Core\Contracts\{Request, Middleware};
 use Core\Exceptions\RouteNotFoundException;
 
 class Router
@@ -68,10 +68,10 @@ class Router
             throw new RouteNotFoundException;
         }
 
-        Middleware::resolveDefault();
+        app(Middleware::class)->resolveDefault();
 
         foreach ($route["middlewares"] as $middleware ) {
-            Middleware::resolve($middleware);
+            app(Middleware::class)->resolve($middleware);
         }
 
         self::registerProviders();

@@ -3,12 +3,13 @@
 namespace Core;
 
 use Closure;
+use Core\Contracts\Event;
 
-class Event
+class EventManager implements Event
 {
     public static $events = [];
 
-    public static function trigger($event, $args = array())
+    public static function trigger(string $event, array $args = []): void
     {
         if(isset(self::$events[$event]))
         {
@@ -17,10 +18,9 @@ class Event
                 call_user_func_array($func, $args);
             }
         }
-
     }
 
-    public static function bind($event, Closure $func)
+    public static function bind(string $event, Closure $func): void
     {
         self::$events[$event][] = $func;
     }
