@@ -2,16 +2,21 @@
 
 use Core\{
     App,
-    Auth,
     Session,
     Response,
     Router,
     Request,
-    Config,
     Event,
     Migration,
     View,
     Validator
+};
+
+use Core\Contracts\{
+    Cookie,
+    Config,
+    Auth,
+    DB
 };
 
 use Core\Exceptions\ForbiddenException;

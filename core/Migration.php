@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use Core\Contracts\DB;
 use PDO;
 
 class Migration

@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Core\Contracts\DB;
+
 class Validator
 {
     protected static $rules;

@@ -2,12 +2,13 @@
 
 namespace Core;
 
+use Core\Contracts\DB;
 use Core\Exceptions\ModelNotFoundException;
 use Exception;
 use PDO;
 use PDOException;
 
-class DB
+class DatabaseManager implements DB
 {
     private static $instance = null;
 
@@ -36,7 +37,7 @@ class DB
         }
     }
 
-    public static function getInstance(array $config)
+    public static function getInstance(array $config): self
     {
         if (! self::$instance) {
             self::$instance = new self($config);
@@ -45,18 +46,19 @@ class DB
         return self::$instance;
     }
     
-    public function getConnection() {
+    public function getConnection(): PDO
+    {
         return $this->connection;
     }
 
-    public function raw($query)
+    public function raw(string $query): self
     {
         $this->connection->exec($query);
         
         return $this;
     }
 
-    public function query($query, $params = []) 
+    public function query(string $query, array $params = []): self
     {
         $this->statement = $this->connection->prepare($query);
         
@@ -65,17 +67,17 @@ class DB
         return $this;
     }
 
-    public function get($options = PDO::FETCH_DEFAULT) 
+    public function get(int $options = PDO::FETCH_DEFAULT): array
     {
         return $this->statement->fetchAll($options);
     }
 
-    public function find($options = PDO::FETCH_DEFAULT) 
+    public function find(int $options = PDO::FETCH_DEFAULT): mixed
     {
         return $this->statement->fetch($options);
     }
 
-    public function findOrFail($options = PDO::FETCH_DEFAULT) 
+    public function findOrFail(int $options = PDO::FETCH_DEFAULT): mixed
     {
         if (! $item = $this->find($options)) {
             throw new ModelNotFoundException();
@@ -84,7 +86,7 @@ class DB
         return $item;
     }
 
-    public function tables() 
+    public function tables(): array
     {
         foreach ($this->query("SHOW TABLES")->get() as $table) {
             $this->tables[array_values($table)[0]] = $table;
@@ -93,14 +95,14 @@ class DB
         return $this->tables;
     }
 
-    public function tableExists($table)
+    public function tableExists(string $table): bool
     {
         if (empty($this->tables)) $this->tables();
 
         return isset($this->tables[$table]);
     }
 
-    public function columns($table) 
+    public function columns(string $table): array
     {
         foreach ($this->query("DESCRIBE {$table};")->get() as $column) {
             $this->columns[$table][$column["Field"]] = $column;
@@ -109,14 +111,14 @@ class DB
         return $this->columns;
     }
 
-    public function columnExists($table, $column)
+    public function columnExists(string $table, string $column): bool
     {
         if (empty(isset($this->columns[$table]))) $this->columns($table);
 
         return isset($this->columns[$table][$column]);
     }
 
-    public function lastId()
+    public function lastId(): mixed
     {
         return $this->connection->lastInsertId();
     }

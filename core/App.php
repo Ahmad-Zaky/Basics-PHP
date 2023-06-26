@@ -3,14 +3,24 @@
 namespace Core;
 
 use Exception;
-use Core\Exceptions\ForbiddenException;
-use Core\Exceptions\ModelNotFoundException;
-use Core\Exceptions\RouteNotFoundException;
+
+use Core\Contracts\{
+    Auth,
+    Config,
+    Cookie,
+    DB
+};
+
+use Core\Exceptions\{
+    ForbiddenException,
+    ModelNotFoundException,
+    RouteNotFoundException
+};
 
 class App
 {
     public static string $ROOT_DIR;
-    
+
     public static self $app;
 
     protected static $container;
@@ -24,15 +34,15 @@ class App
     public function boot()
     {
         $container = new Container;
-     
+
         App::setContainer($container);
 
         $this->singletonList([
-            Config::class => fn() => new Config,
-            DB::class => fn() => DB::getInstance(config("database.connection")),
+            Config::class => fn() => new ConfigManager,
+            DB::class => fn() => DatabaseManager::getInstance(config("database.connection")),
             Session::class => fn() => new Session,
-            Cookie::class => fn() => new Cookie,
-            Auth::class => fn() => new Auth,
+            Cookie::class => fn() => new CookieManager,
+            Auth::class => fn() => new AuthenticationManager,
             Router::class => fn() => new Router,
             Request::class => fn() => new Request,
             Validator::class => fn() => new Validator,

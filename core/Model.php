@@ -2,32 +2,33 @@
 
 namespace Core;
 
+use Core\Contracts\DB;
 use Core\Exceptions\ModelNotFoundException;
 
 class Model
 {
-    protected $table = "";
+    protected string $table = "";
     
-    protected $attributes = [];
+    protected array $attributes = [];
     
     protected $query = NULL;
 
-    public static function calledClass() 
+    public static function calledClass(): string
     {
         return get_called_class();
     }
 
-    public static function calledClassInstance() 
+    public static function calledClassInstance(): self
     {
         return new (self::calledClass());
     }
 
-    public static function getTable() 
+    public static function getTable(): string
     {
         return self::calledClassInstance()->table;
     }
-    
-    protected function getAttribute($key)
+
+    protected function getAttribute($key): string|NULL
     {
         if (array_key_exists($key, $this->attributes)) {
             return $this->attributes[$key];
@@ -36,24 +37,24 @@ class Model
         return NULL;
     }
 
-    protected function setAttribute($key, $value)
+    protected function setAttribute(string $key, mixed $value): self
     {
         $this->attributes[$key] = $value;
 
         return $this;
     }
 
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->getAttributes();
     }
 
-    public function setAttributes($data) 
+    public function setAttributes(array $data): self
     {
         foreach($data as  $key => $value) {
             $this->setAttribute($key, $value);
@@ -62,22 +63,22 @@ class Model
         return $this;
     }
 
-    public function __get($key)
+    public function __get(string $key): mixed
     {
         return $this->getAttribute($key);
     }
 
-    public function __set($key, $value)
+    public function __set(string $key, mixed $value): void
     {
         $this->setAttribute($key, $value);
     }
 
-    public function has($key)
+    public function has(string $key): bool
     {
         return array_key_exists($key, $this->attributes);
     }
 
-    protected function buildModels($modelsList)
+    protected function buildModels(array $modelsList): array
     {
         $models = [];
         foreach ($modelsList as $modelArr) {
@@ -87,7 +88,7 @@ class Model
         return $models;
     }
 
-    protected function buildModel($data, $new = true)
+    protected function buildModel(array $data, bool $new = true): self
     {
         $model = $new ? self::calledClassInstance() : $this;
 
@@ -123,7 +124,7 @@ class Model
     public static function create(array $data) 
     {
         $db = app(DB::class);
-        
+
         $table = self::getTable();
         $fields = implode(', ', array_keys($data));
         $placeHolders = implode(', ', array_fill(0, count($data), "?"));
@@ -131,7 +132,7 @@ class Model
         if ($db->query("INSERT INTO {$table} ({$fields}) VALUES ({$placeHolders})", array_values($data))) {
             return self::calledClassInstance()->buildModel(array_merge($data, ["id" => $db->lastId()]));
         }
-        
+
         return NULL;
     }
 
@@ -165,22 +166,22 @@ class Model
         return NULL;
     }
 
-    public function get()
+    public function get(): array
     {
         return $this->buildModels($this->query->get());
     }
 
-    public function first()
+    public function first(): self
     {
         return $this->buildModels($this->query->get())[0] ?? NULL;
     }
 
-    public function firstOrFail()
+    public function firstOrFail(): self|ModelNotFoundException
     {
         return $this->buildModels($this->query->get())[0] ?? throw new ModelNotFoundException;
     }
 
-    public function query($statement, $params)
+    public function query(mixed $statement, array $params): self
     {
         $db = app(DB::class);
 

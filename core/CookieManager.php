@@ -2,11 +2,13 @@
 
 namespace Core;
 
-class Cookie
+use Core\Contracts\Cookie;
+
+class CookieManager implements Cookie
 {
     protected $options = [];
 
-    public function set($key, $value, $expire = 0, $options = [])
+    public function set(string $key, mixed $value, int $expire = 0, array $options = []): bool
     {
         if (! empty($options)) {
             $this->options = $options;
@@ -23,21 +25,23 @@ class Cookie
         );
     }
 
-    public function get($key) 
+    public function get(string $key): string
     {
         return $_COOKIE[$key] ?? NULL;
     }
 
-    public function getAll($key) 
+    public function getAll(): array 
     {
         return $_COOKIE;
     }
 
-    public function expire($key) 
+    public function expire(string $key): bool
     {
         if (isset($_COOKIE[$key])) {
             unset($_COOKIE[$key]);
             return $this->set($key, '', -1);   
         }
+
+        return false;
     }
 }

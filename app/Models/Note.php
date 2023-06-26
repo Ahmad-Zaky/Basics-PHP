@@ -6,7 +6,7 @@ use Core\Model;
 
 class Note extends Model
 {
-    protected $table = "notes";
+    protected string $table = "notes";
 
     public static function rules(string $key = NULL)
     {

@@ -2,9 +2,11 @@
 
 namespace Core;
 
-class Config
+use Core\Contracts\Config;
+
+class ConfigManager implements Config
 {
-    public function get($keys = "") 
+    public function get(string $keys = ""): mixed
     {
         $keyParts = explode(".", $keys);
 

@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use Core\Contracts\Authenticatable;
 use Core\Model;
 
-class User extends Model
+class User extends Model implements Authenticatable
 {
-    protected $table = "users";
+    protected string $table = "users";
 
     public static function rules(string $key = NULL)
     {
