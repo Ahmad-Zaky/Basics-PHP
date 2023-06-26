@@ -14,7 +14,8 @@ use Core\Contracts\{
     Response,
     Migration,
     Request,
-    Session
+    Session,
+    Validator
 };
 
 use Core\Exceptions\{
@@ -51,7 +52,7 @@ class App
             Auth::class => fn() => new AuthenticationManager,
             Router::class => fn() => new Router,
             Request::class => fn() => new RequestManager,
-            Validator::class => fn() => new Validator,
+            Validator::class => fn() => new ValidatorManager,
             Middleware::class => fn() => new MiddlewareManager,
             Controller::class => fn() => new Controller,
             Model::class => fn() => new Model,

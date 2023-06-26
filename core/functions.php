@@ -4,7 +4,6 @@ use Core\{
     App,
     Router,
     View,
-    Validator
 };
 
 use Core\Contracts\{
@@ -15,7 +14,8 @@ use Core\Contracts\{
     Request,
     Migration,
     Event,
-    Session
+    Session,
+    Validator
 };
 
 use Core\Exceptions\ForbiddenException;
@@ -603,7 +603,7 @@ if (! function_exists('hasErrors')) {
 if (! function_exists('validate')) {
     function validate(array $rules): mixed
     {
-        return Validator::validate($rules);
+        return app(Validator::class)->validate($rules);
     }
 }
 

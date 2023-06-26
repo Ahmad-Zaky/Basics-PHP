@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Note;
 use Core\Controller;
-use Core\Validator;
+use Core\Contracts\Validator;
 
 class NotesController extends Controller
 {
@@ -43,7 +43,7 @@ class NotesController extends Controller
     public function store()
     {
         if (validate(Note::rules()["store"])) {
-            $data = Validator::validated();
+            $data = app(Validator::class)->validated();
 
             $note = Note::create(array_merge($data, ["user_id" => auth("id")]));
 
@@ -73,7 +73,7 @@ class NotesController extends Controller
         authorize($note->user_id === auth("id"));
 
         if (validate(Note::rules()["update"])) {
-            $data = Validator::validated();
+            $data = app(Validator::class)->validated();
 
             $note->update($data);
 

@@ -3,8 +3,9 @@
 namespace Core;
 
 use Core\Contracts\DB;
+use Core\Contracts\Validator;
 
-class Validator
+class ValidatorManager implements Validator
 {
     protected static $rules;
 
@@ -14,7 +15,7 @@ class Validator
     
     protected static $errors;
 
-    public static function validate($rules) 
+    public function validate(array $rules): mixed
     {
         self::$rules = $rules;
 
@@ -33,7 +34,7 @@ class Validator
         back();
     }
     
-    public static function isValid($rules, $key, $value)
+    public static function isValid(mixed $rules, string $key, mixed $value): bool
     {
         $rules = is_array($rules) ? $rules : explode("|", $rules);
         foreach ($rules as $rule) {
@@ -56,10 +57,10 @@ class Validator
         return ! empty($errors);
     }
 
-    public static function validations() 
+    public static function validations(): array
     {
         return [
-            'required' => static function ($rule, $key, $value) {
+            'required' => static function (string $rule, string $key, mixed $value): bool {
                 if (self::required($value)) return true;
     
                 self::addRuleError($rule, $key, [":key" => formatText($key)]);
@@ -67,7 +68,7 @@ class Validator
                 return false;
             },
 
-            'max' => static function ($rule, $key, $value, $option) {
+            'max' => static function (string $rule, string $key, mixed $value, string $option): bool {
     
                 if (self::max($value, $option)) return true;                
                 
@@ -76,7 +77,7 @@ class Validator
                 return false;
             },
     
-            'min' => static function ($rule, $key, $value, $option) {
+            'min' => static function (string $rule, string $key, mixed $value, string $option): bool {
     
                 if (self::min($value, $option)) return true;                
                 
@@ -85,7 +86,7 @@ class Validator
                 return false;
             },
     
-            'email' => static function ($rule, $key, $value) {
+            'email' => static function (string $rule, string $key, mixed $value): bool {
     
                 if (self::email($value)) return true;                
     
@@ -94,7 +95,7 @@ class Validator
                 return false;
             },
     
-            'url' => static function ($rule, $key, $value) {
+            'url' => static function (string $rule, string $key, mixed $value): bool {
     
                 if (self::url($value)) return true;                
                 
@@ -103,7 +104,7 @@ class Validator
                 return false;
             },
 
-            'exists' => static function ($rule, $key, $value, $option) {
+            'exists' => static function (string $rule, string $key, mixed $value, string $option): bool {
     
                 if (self::exists($value, $option)) return true;                
                 
@@ -112,7 +113,7 @@ class Validator
                 return false;
             },
 
-            'unique' => static function ($rule, $key, $value, $option) {
+            'unique' => static function (string $rule, string $key, mixed $value, string $option): bool {
     
                 if (self::unique($value, $option)) return true;                
                 
@@ -121,7 +122,7 @@ class Validator
                 return false;
             },
 
-            'in' => static function ($rule, $key, $value, $option) {
+            'in' => static function (string $rule, string $key, mixed $value, string $option): bool {
     
                 if (self::in($value, $option)) return true;                
                 
@@ -130,7 +131,7 @@ class Validator
                 return false;
             },
 
-            'confirmed' => static function ($rule, $key, $value) {
+            'confirmed' => static function (string $rule, string $key, mixed $value): bool {
     
                 if (self::confirmed($key, $value)) return true;                
                 
@@ -141,32 +142,32 @@ class Validator
         ];
     }
     
-    public static function required($value)
+    public static function required(mixed $value)
     {
         return strlen(trim($value) ?? "");
     }
 
-    public static function max($value, $max)
+    public static function max(string $value, int $max)
     {
         return strlen(trim($value) ?? "") < $max;
     }
 
-    public static function min($value, $min)
+    public static function min(mixed $value, int $min)
     {
         return strlen(trim($value) ?? "") > $min;
     }
 
-    public static function email($value)
+    public static function email(string $value): mixed
     {
         return filter_var(trim($value) ?? "", FILTER_VALIDATE_EMAIL);
     }
 
-    public static function url($value)
+    public static function url(string $value): mixed
     {
         return filter_var(trim($value) ?? "", FILTER_VALIDATE_URL, FILTER_FLAG_PATH_REQUIRED);
     }
 
-    public static function exists($value, $option)
+    public static function exists(mixed $value, string $option): bool
     {
         $table = explode(",", $option)[0];
         $column = explode(",", $option)[1] ?? "id";
@@ -183,7 +184,7 @@ class Validator
         return $item !== false;
     }
 
-    public static function unique($value, $option)
+    public static function unique(mixed $value, string $option): bool
     {
         $table = explode(",", $option)[0];
         $column = explode(",", $option)[1] ?? "id";
@@ -207,28 +208,27 @@ class Validator
         return $item === false;
     }
 
-    public static function in($value, $option)
+    public static function in(mixed $value, string $option): bool
     {
         return empty($value) || in_array($value, explode(",", $option));
     }
 
-    public static function confirmed($key, $value)
+    public static function confirmed(string $key, mixed $value): bool
     {
         return request("{$key}_confirmation") === $value;
     }
 
-
-    public static function validated()
+    public function validated(): ?array
     {
         return self::$validated;
     }
 
-    protected static function getKeyValue(string $key)
+    protected static function getKeyValue(string $key): mixed
     {
         return trim(request($key));
     }
 
-    protected static function messages($rule)
+    protected static function messages(string $rule): ?string
     {
         if (empty(self::$messages)) {
             self::$messages = require corePath("error_messages.php");
@@ -237,7 +237,7 @@ class Validator
         return self::$messages[$rule] ?? NULL;
     }
 
-    protected static function getRuleMessage($rule, $placeHolders = [])
+    protected static function getRuleMessage(string $rule, array $placeHolders = []): string
     {
         if (! $errorMsg = self::messages($rule)) {
             return '';
@@ -250,12 +250,12 @@ class Validator
         return $errorMsg;
     }
 
-    public static function addRuleError($rule, $key, $placeHolders = []) 
+    public static function addRuleError(string $rule, string $key, array $placeHolders = []): void
     {
         self::$errors[$key][$rule] = self::getRuleMessage($rule, $placeHolders);
     }
 
-    protected static function getMessage($errorMsg, $placeHolders = [])
+    protected static function getMessage(string $errorMsg, array $placeHolders = []): string
     {
         if (! $errorMsg) {
             return '';
@@ -268,12 +268,13 @@ class Validator
         return $errorMsg;
     }
 
-    public static function addError($message, $key, $placeHolders = []) 
+    public static function addError(string $message, string $key, array $placeHolders = []): void
     {
         self::$errors[$key][] = self::getMessage($message, $placeHolders);
     }
 
-    protected static function passErrorsToSession() {
+    protected static function passErrorsToSession(): void
+    {
         session()->setFlash("errors", self::$errors);
     }
 }

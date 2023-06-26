@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Core\Controller;
 use App\Models\User;
-use Core\Validator;
+use Core\Contracts\Validator;
 use Exception;
 
 class AuthController extends Controller
@@ -17,7 +17,7 @@ class AuthController extends Controller
     public function signin()
     {
         if (validate(User::rules()["signin"])) {
-            $data = Validator::validated();
+            $data = app(Validator::class)->validated();
 
             $user = User::findByEmail($data["email"]);
 
@@ -43,7 +43,7 @@ class AuthController extends Controller
     public function signup()
     {
         if (validate(User::rules()["signup"])) {
-            $data = Validator::validated();
+            $data = app(Validator::class)->validated();
 
             $user = User::create([
                 "name" => $data["name"],
