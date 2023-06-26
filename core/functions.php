@@ -2,7 +2,6 @@
 
 use Core\{
     App,
-    Session,
     Router,
     View,
     Validator
@@ -15,7 +14,8 @@ use Core\Contracts\{
     Response,
     Request,
     Migration,
-    Event
+    Event,
+    Session
 };
 
 use Core\Exceptions\ForbiddenException;

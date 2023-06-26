@@ -13,7 +13,8 @@ use Core\Contracts\{
     Middleware,
     Response,
     Migration,
-    Request
+    Request,
+    Session
 };
 
 use Core\Exceptions\{
@@ -45,7 +46,7 @@ class App
         $this->singletonList([
             Config::class => fn() => new ConfigManager,
             DB::class => fn() => DatabaseManager::getInstance(config("database.connection")),
-            Session::class => fn() => new Session,
+            Session::class => fn() => new SessionManager,
             Cookie::class => fn() => new CookieManager,
             Auth::class => fn() => new AuthenticationManager,
             Router::class => fn() => new Router,

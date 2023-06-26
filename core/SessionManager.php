@@ -2,7 +2,10 @@
 
 namespace Core;
 
-class Session
+use Core\Contracts\Authenticatable;
+use Core\Contracts\Session;
+
+class SessionManager implements Session
 {
     protected const FLASH = "flash_messages";
 
@@ -13,22 +16,22 @@ class Session
         $this->markFlashMessages();
     }
 
-    public function set($key, $value)
+    public function set(string $key, mixed $value): void
     {
         $_SESSION[$key] = $value;
     }
 
-    public function get($key) 
+    public function get(string $key): mixed
     {
         return $_SESSION[$key] ?? NULL;
     }
 
-    public function remove($key) 
+    public function remove(string $key): void
     {
         unset($_SESSION[$key]);
     }
 
-    public function markFlashMessages()
+    public function markFlashMessages(): void
     {
         $flashMessages = $_SESSION[self::FLASH] ?? [];
         foreach ($flashMessages as &$flashMessage) {
@@ -38,7 +41,7 @@ class Session
         $_SESSION[self::FLASH] = $flashMessages;
     }
 
-    public function setFlash($key, $message) 
+    public function setFlash(string $key, mixed $message): void
     {
         $_SESSION[self::FLASH][$key] = [
             "message" => $message,
@@ -46,12 +49,12 @@ class Session
         ];
     }
 
-    public function getFlash($key) 
+    public function getFlash($key): ?string
     {
         return $_SESSION[self::FLASH][$key]["message"] ?? NULL;
     }
 
-    public function destroy()
+    public function destroy(): void
     {
         $_SESSION = [];
         session_destroy();
@@ -78,17 +81,17 @@ class Session
         return $_SESSION['_token'] = bin2hex(random_bytes(40));
     }
     
-    public function csrfInput() 
+    public function csrfInput(): string
     {
         return '<input type="hidden" name="_token" value="'. $this->csrf() .'">';
     }
 
-    public function destroyCsrf() 
+    public function destroyCsrf(): void
     {
         unset($_SESSION['_token']);
     }
 
-    public function signin($user)
+    public function signin(Authenticatable $user): void
     {
         $_SESSION["user"] = [
             "id" => $user->id,

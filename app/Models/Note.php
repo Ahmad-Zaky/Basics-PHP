@@ -24,7 +24,7 @@ class Note extends Model
         return empty($key) ? $rules : ($rules[$key] ?? []);
     }
 
-    public static function all() 
+    public static function all(): array
     {
         return (new self)->query("SELECT * FROM notes WHERE user_id = :user_id", [
             "user_id" => auth("id")

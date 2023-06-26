@@ -2,10 +2,10 @@
 
 namespace Core;
 
-use Core\Contracts\DB;
+use Core\Contracts\{DB, ModelContract};
 use Core\Exceptions\ModelNotFoundException;
 
-class Model
+class Model implements ModelContract
 {
     protected string $table = "";
     
@@ -97,7 +97,7 @@ class Model
         return $model;
     }
 
-    public static function all() 
+    public static function all(): array
     {
         $db = app(DB::class);
         $table = self::getTable();
@@ -105,7 +105,7 @@ class Model
         return self::calledClassInstance()->buildModels($db->query("SELECT * FROM {$table}")->get());
     }
 
-    public static function find(int $id)
+    public static function find(int $id): mixed
     {
         $db = app(DB::class);
         $table = self::getTable();
@@ -115,7 +115,7 @@ class Model
         return $found ? self::calledClassInstance()->buildModel($found) : NULL;
     }
 
-    public static function findOrFail(int $id)
+    public static function findOrFail(int $id): mixed
     {
         $db = app(DB::class);
         $table = self::getTable();
@@ -123,7 +123,7 @@ class Model
         return self::calledClassInstance()->buildModel($db->query("SELECT * FROM {$table} WHERE id = :id", ["id" => $id])->findOrFail());
     }
 
-    public static function create(array $data) 
+    public static function create(array $data): mixed
     {
         $db = app(DB::class);
 
@@ -138,7 +138,7 @@ class Model
         return NULL;
     }
 
-    public function update(array $data) 
+    public function update(array $data): mixed
     {
         $db = app(DB::class);
         $table = self::getTable();
@@ -156,7 +156,7 @@ class Model
         return NULL;
     }
 
-    public function delete() 
+    public function delete(): mixed
     {
         $db = app(DB::class);
         $table = self::getTable();
@@ -178,7 +178,7 @@ class Model
         return $this->buildModels($this->query->get())[0] ?? NULL;
     }
 
-    public function firstOrFail(): self|ModelNotFoundException
+    public function firstOrFail(): mixed
     {
         return $this->buildModels($this->query->get())[0] ?? throw new ModelNotFoundException;
     }
