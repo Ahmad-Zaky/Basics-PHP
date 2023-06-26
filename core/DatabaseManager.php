@@ -3,6 +3,7 @@
 namespace Core;
 
 use Core\Contracts\DB;
+use Core\Contracts\Response;
 use Core\Exceptions\ModelNotFoundException;
 use Exception;
 use PDO;

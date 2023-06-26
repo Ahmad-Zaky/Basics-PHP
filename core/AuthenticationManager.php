@@ -13,7 +13,7 @@ class AuthenticationManager implements Auth
     function __construct()
     {
         $this->class = config("app.authenticatable");
-        
+
         $this->user();
     }
 

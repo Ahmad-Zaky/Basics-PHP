@@ -12,6 +12,7 @@ use Core\Contracts\{
     Event,
     Middleware,
     Response,
+    Migration,
     Request
 };
 
@@ -55,7 +56,7 @@ class App
             Model::class => fn() => new Model,
             View::class => fn() => new View,
             Response::class => fn() => new ResponseManager,
-            Migration::class => fn() => new Migration,
+            Migration::class => fn() => new MigrationManager,
             Event::class => fn() => new EventManager,
         ]);
     }

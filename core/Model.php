@@ -110,7 +110,9 @@ class Model
         $db = app(DB::class);
         $table = self::getTable();
 
-        return self::calledClassInstance()->buildModel($db->query("SELECT * FROM {$table} WHERE id = :id", ["id" => $id])->find());
+        $found = $db->query("SELECT * FROM {$table} WHERE id = :id", ["id" => $id])->find();
+
+        return $found ? self::calledClassInstance()->buildModel($found) : NULL;
     }
 
     public static function findOrFail(int $id)
@@ -171,7 +173,7 @@ class Model
         return $this->buildModels($this->query->get());
     }
 
-    public function first(): self
+    public function first(): self|NULL
     {
         return $this->buildModels($this->query->get())[0] ?? NULL;
     }

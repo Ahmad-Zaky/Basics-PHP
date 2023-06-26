@@ -4,7 +4,6 @@ use Core\{
     App,
     Session,
     Router,
-    Migration,
     View,
     Validator
 };
@@ -15,6 +14,7 @@ use Core\Contracts\{
     Auth,
     Response,
     Request,
+    Migration,
     Event
 };
 
@@ -26,7 +26,7 @@ use Core\Exceptions\ForbiddenException;
  * @return void
  */
 if (! function_exists("env")) {
-    function env($key = "", $default = NULL)
+    function env(string $key = "", string|NULL $default = NULL): mixed
     {
         return $_ENV[$key] ?? $default;
     }
@@ -38,7 +38,7 @@ if (! function_exists("env")) {
  * @return void
  */
 if (! function_exists("config")) {
-    function config($keys = "", $default = NULL)
+    function config(string $keys = "", string|NULL $default = NULL): mixed
     {
         return app(Config::class)->get($keys) ?? $default;
     }
@@ -50,9 +50,9 @@ if (! function_exists("config")) {
  * @return void
  */
 if (! function_exists("migrate")) {
-    function migrate()
+    function migrate(): void
     {
-        return app(Migration::class)->migrate();
+        app(Migration::class)->migrate();
     }
 }
 
@@ -62,7 +62,7 @@ if (! function_exists("migrate")) {
  * @return void
  */
 if (! function_exists("signin")) {
-    function signin($user = NULL)
+    function signin(mixed $user = NULL): void
     {
         session()->signin($user);
     }
@@ -74,7 +74,7 @@ if (! function_exists("signin")) {
  * @return void
  */
 if (! function_exists("signout")) {
-    function signout()
+    function signout(): void
     {
         session()->destroy();
     }
@@ -86,7 +86,7 @@ if (! function_exists("signout")) {
  * @return void
  */
 if (! function_exists("auth")) {
-    function auth($key = "")
+    function auth(string $key = ""): mixed
     {
         $auth = app(Auth::class)->user();
         
@@ -104,7 +104,7 @@ if (! function_exists("auth")) {
  * @return void
  */
 if (! function_exists("guest")) {
-    function guest()
+    function guest(): bool
     {
         return ! auth();
     }
@@ -116,7 +116,7 @@ if (! function_exists("guest")) {
  * @return void
  */
 if (! function_exists("request")) {
-    function request($key = "")
+    function request(string $key = ""): mixed
     {
         $request = app(Request::class);
 
@@ -134,19 +134,19 @@ if (! function_exists("request")) {
  * @return void
  */
 if (! function_exists("event")) {
-    function event()
+    function event(): Event
     {
         return app(Event::class);
     }
 }
-    
+
 /**
  * response function
  *
  * @return void
  */
 if (! function_exists("response")) {
-    function response()
+    function response(): Response
     {
         return app(Response::class);
     }
@@ -158,7 +158,7 @@ if (! function_exists("response")) {
  * @return void
  */
 if (! function_exists("cookie")) {
-    function cookie($key = "")
+    function cookie(string $key = ""): Cookie|NULL
     {
         $cookie = app(Cookie::class);
 
@@ -176,7 +176,7 @@ if (! function_exists("cookie")) {
  * @return string
  */
 if (! function_exists("csrfToken")) {
-    function csrfToken()
+    function csrfToken(): string
     {
         return session()->csrf();
     }
@@ -188,7 +188,7 @@ if (! function_exists("csrfToken")) {
  * @return string
  */
 if (! function_exists("generateToken")) {
-    function generateToken()
+    function generateToken(): string
     {
         return session()->genCsrf();
     }
@@ -200,7 +200,7 @@ if (! function_exists("generateToken")) {
  * @return string
  */
 if (! function_exists('csrfInput')) {
-    function csrfInput()
+    function csrfInput(): string
     {
         return session()->csrfInput();
     }
@@ -212,7 +212,7 @@ if (! function_exists('csrfInput')) {
  * @return string
  */
 if (! function_exists('requestMethod')) {
-    function requestMethod()
+    function requestMethod(): string
     {    
         return request()->method();
     }
@@ -224,7 +224,7 @@ if (! function_exists('requestMethod')) {
  * @return void
  */
 if (! function_exists("distroyCsrfToken")) {
-    function distroyCsrfToken()
+    function distroyCsrfToken(): void
     {
         session()->destroyCsrf();
     }
@@ -236,7 +236,7 @@ if (! function_exists("distroyCsrfToken")) {
  * @return void
  */
 if (! function_exists("session")) {
-    function session($key = "")
+    function session(string $key = ""): mixed
     {
         $session = app(Session::class);
         if ($key) {
@@ -253,7 +253,7 @@ if (! function_exists("session")) {
  * @return void
  */
 if (! function_exists("app")) {
-    function app($key = "")
+    function app(string $key = ""): mixed
     {
         if ($key) {
             return App::resolve($key);
@@ -269,7 +269,7 @@ if (! function_exists("app")) {
  * @return void
  */
 if (! function_exists("old")) {
-    function old($key, $default = "")
+    function old(string $key, mixed $default = NULL): string
     {
         return session()->getFlash("old")[$key] ?? $default;
     }
@@ -281,7 +281,7 @@ if (! function_exists("old")) {
  * @return void
  */
 if (! function_exists("showErrors")) {
-    function showErrors()
+    function showErrors(): void
     {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
@@ -296,7 +296,7 @@ if (! function_exists("showErrors")) {
  * @return void
  */
 if (! function_exists('d')) {
-	function d($dump='')
+	function d(string $dump=''): string
 	{
 		return is_string($dump) AND die($dump);
 	}
@@ -309,7 +309,7 @@ if (! function_exists('d')) {
  * @return void
  */
 if (! function_exists('dd')) {
-    function dd()
+    function dd(): void
     {
         foreach (func_get_args() as $dump) {
             echo "<pre>";
@@ -328,7 +328,7 @@ if (! function_exists('dd')) {
  * @return void
  */
 if (! function_exists('dump')) {
-    function dump($dump='')
+    function dump(string $dump=''): void
     {
         foreach (func_get_args() as $dump) {
             echo "<pre>";
@@ -345,7 +345,7 @@ if (! function_exists('dump')) {
  * @return void
  */
 if (! function_exists('urlIs')) {
-    function urlIs($value = '')
+    function urlIs(string $value = ''): bool
     {
         return app(Router::class)->urlIs($value);
     }
@@ -355,10 +355,10 @@ if (! function_exists('urlIs')) {
  * urlIn function
  *
  * @param [type] $value
- * @return void
+ * @return bool
  */
 if (! function_exists('urlIn')) {
-    function urlIn(array $routes)
+    function urlIn(array $routes): bool
     {
         return app(Router::class)->urlIn($routes);
     }
@@ -371,7 +371,7 @@ if (! function_exists('urlIn')) {
  * @return void
  */
 if (! function_exists('abort')) {
-    function abort(int $code = 404, string $message = NULL)
+    function abort(int $code = 404, string|NULL $message = NULL): void
     {
         app(Response::class)->abort($code, $message);
     }
@@ -383,12 +383,11 @@ if (! function_exists('abort')) {
  * @return string
  */
 if (! function_exists('view')) {
-    function view($path = "", $attributes = [])
+    function view(string $path = "", array $attributes = []): void
     {
         app(View::class)->render($path, $attributes);
     }
 }
-
 
 /**
  * basePath function
@@ -396,7 +395,7 @@ if (! function_exists('view')) {
  * @return string
  */
 if (! function_exists('basePath')) {
-    function basePath($path = "")
+    function basePath(string $path = ""): string
     {
         return App::$ROOT_DIR . DIRECTORY_SEPARATOR . $path;
     }
@@ -408,7 +407,7 @@ if (! function_exists('basePath')) {
  * @return string
  */
 if (! function_exists('corePath')) {
-    function corePath($path = "")
+    function corePath(string $path = ""): string
     {
         return basePath("core". DIRECTORY_SEPARATOR . $path);
     }
@@ -420,7 +419,7 @@ if (! function_exists('corePath')) {
  * @return string
  */
 if (! function_exists('appPath')) {
-    function appPath($path = "")
+    function appPath(string $path = ""): string
     {
         return basePath("app". DIRECTORY_SEPARATOR . $path);
     }
@@ -432,7 +431,7 @@ if (! function_exists('appPath')) {
  * @return string
  */
 if (! function_exists('controllersPath')) {
-    function controllersPath($path = "")
+    function controllersPath(string $path = ""): string
     {
         return appPath("Controllers". DIRECTORY_SEPARATOR . $path);
     }
@@ -444,7 +443,7 @@ if (! function_exists('controllersPath')) {
  * @return string
  */
 if (! function_exists('migrationsPath')) {
-    function migrationsPath($path = "")
+    function migrationsPath(string $path = ""): string
     {
         return appPath("Migrations". DIRECTORY_SEPARATOR . $path);
     }
@@ -456,7 +455,7 @@ if (! function_exists('migrationsPath')) {
  * @return string
  */
 if (! function_exists('providersPath')) {
-    function providersPath($path = "")
+    function providersPath(string $path = ""): string
     {
         return appPath("Providers". DIRECTORY_SEPARATOR . $path);
     }
@@ -468,7 +467,7 @@ if (! function_exists('providersPath')) {
  * @return string
  */
 if (! function_exists('viewsPath')) {
-    function viewsPath($path = "")
+    function viewsPath(string $path = ""): string
     {
         return appPath("Views". DIRECTORY_SEPARATOR . $path);
     }
@@ -480,7 +479,7 @@ if (! function_exists('viewsPath')) {
  * @return string
  */
 if (! function_exists('partialsPath')) {
-    function partialsPath($path = "")
+    function partialsPath(string $path = ""): string
     {
         return viewsPath("partials". DIRECTORY_SEPARATOR . $path);
     }
@@ -492,7 +491,7 @@ if (! function_exists('partialsPath')) {
  * @return string
  */
 if (! function_exists('errorsPath')) {
-    function errorsPath($path = "")
+    function errorsPath(string $path = ""): string
     {
         return viewsPath("errors". DIRECTORY_SEPARATOR . $path);
     }
@@ -506,7 +505,7 @@ if (! function_exists('errorsPath')) {
  * @return void
  */
 if (! function_exists('authorize')) {
-    function authorize($condition)
+    function authorize(string $condition): void
     {
         if (! $condition) throw new ForbiddenException;
     }
@@ -520,7 +519,7 @@ if (! function_exists('authorize')) {
  * @return string
  */
 if (! function_exists('formatText')) {
-    function formatText($text, $delimiter = '_')
+    function formatText(string $text, string $delimiter = '_'): string
     {
         return ucwords(str_replace($delimiter, ' ', $text));
     }
@@ -533,7 +532,7 @@ if (! function_exists('formatText')) {
  * @return void
  */
 if (! function_exists('route')) {
-    function route($name, $params = [])
+    function route(string $name, array $params = []): string|NULL
     {
         return Router::getRoute($name, $params);
     }
@@ -546,9 +545,9 @@ if (! function_exists('route')) {
  * @return void
  */
 if (! function_exists('redirect')) {
-    function redirect($route = "/", $session = [])
+    function redirect(string $route = "/", array $session = [], bool $isFlash = false): void
     {
-        app(Response::class)->redirect($route, $session);
+        app(Response::class)->redirect($route, $session, $isFlash);
     }
 }
 
@@ -558,9 +557,9 @@ if (! function_exists('redirect')) {
  * @return void
  */
 if (! function_exists('back')) {
-    function back($session = [])
+    function back(array $session = [], bool $isFlash = false): void
     {
-        Response::back($session);
+        app(Response::class)->back($session, $isFlash);
     }
 }
 
@@ -571,7 +570,7 @@ if (! function_exists('back')) {
  * @return string
  */
 if (! function_exists('errors')) {
-    function errors($key = "")
+    function errors(string $key = ""): array
     {   
         $errors = session()->getFlash("errors") ?? [];
 
@@ -586,7 +585,7 @@ if (! function_exists('errors')) {
  * @return string
  */
 if (! function_exists('hasErrors')) {
-    function hasErrors($key = "")
+    function hasErrors(string $key = ""): bool
     {
         $errors = session()->getFlash("errors") ?? [];
 
@@ -602,7 +601,7 @@ if (! function_exists('hasErrors')) {
  * @return string
  */
 if (! function_exists('validate')) {
-    function validate($rules)
+    function validate(array $rules): mixed
     {
         return Validator::validate($rules);
     }
@@ -615,7 +614,7 @@ if (! function_exists('validate')) {
  * @return string
  */
 if (! function_exists('sanitize')) {
-    function sanitize($text = "")
+    function sanitize(string $text = ""): string
     {
         $trimmed = trim($text);
         return htmlspecialchars($trimmed);
@@ -630,7 +629,7 @@ if (! function_exists('sanitize')) {
  * @return string
  */
 if (! function_exists('bcrypt')) {
-    function bcrypt($text, $options = ["cost" => 12])
+    function bcrypt(string $text, array $options = ["cost" => 12])
     {
         return password_hash($text, PASSWORD_BCRYPT, $options);
     }
@@ -644,14 +643,14 @@ if (! function_exists('bcrypt')) {
  * @return bool
  */
 if (! function_exists('verifyHash')) {
-    function verifyHash($text, $hash)
+    function verifyHash(string $text, string $hash): bool
     {
         return password_verify($text, $hash);
     }
 }
 
 if (! function_exists('methodParams')) {
-    function methodParams($className, $methodName)
+    function methodParams(string $className, string|NULL $methodName): array|NULL
     {
         if (! $methodName) return NULL;
 
@@ -670,20 +669,20 @@ if (! function_exists('methodParams')) {
 }
 
 if (! function_exists('hasParameterByType')) {
-    function hasParameterByType($class, $method, $type)
+    function hasParameterByType(string $class, string|NULL $method, string $type): bool
     {
         if (! $params = methodParams($class, $method)) return false;
-    
+
         foreach ($params as $param) {
             if ($type === $param["type"]) return true;
         }
-    
+
         return false;
     }
 }
 
 if (! function_exists('hasParameterByName')) {
-    function hasParameterByName($class, $method, $name)
+    function hasParameterByName(string $class, string $method, string $name): bool
     {
         $params = methodParams($class, $method);
     
@@ -696,7 +695,7 @@ if (! function_exists('hasParameterByName')) {
 }
 
 if (! function_exists('now')) {
-    function now($format = 'Y-m-d H:i:s')
+    function now(string $format = 'Y-m-d H:i:s'): string|false
     {
         return date($format);
     }

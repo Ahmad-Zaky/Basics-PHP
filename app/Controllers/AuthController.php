@@ -29,7 +29,7 @@ class AuthController extends Controller
 
             back([
                 "errors" => ["email" => ["Email or Password doesn't exists"]]
-            ]);
+            ], true);
         }
 
         redirect(route("home"));            

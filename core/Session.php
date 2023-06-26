@@ -68,12 +68,12 @@ class Session
         );
     }
 
-    public function csrf()
+    public function csrf(): string
     {
         return $_SESSION["_token"] ?? $this->genCsrf();
     }
 
-    public function genCsrf() 
+    public function genCsrf(): string
     {
         return $_SESSION['_token'] = bin2hex(random_bytes(40));
     }

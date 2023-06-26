@@ -70,18 +70,26 @@ class ResponseManager implements Response
     public const HTTP_NOT_EXTENDED = 510;                                                // RFC2774
     public const HTTP_NETWORK_AUTHENTICATION_REQUIRED = 511;                             // RFC6585
 
-    public static function redirect(string $route, array $session = []): void
+    public static function redirect(string $route, array $session = [], $isFlash = false): void
     {
-        foreach ($session as $key => $value) $_SESSION[$key] = $value;
+        if ($isFlash) {
+            foreach ($session as $key => $value) session()->setFlash($key, $value);
+        } else {
+            foreach ($session as $key => $value) session()->set($key, $value);
+        }
 
         header("Location: {$route}");
 
         exit();
     }
 
-    public static function back(array $session = []): void
+    public static function back(array $session = [], $isFlash = false): void
     {
-        foreach ($session as $key => $value) $_SESSION[$key] = $value;
+        if ($isFlash) {
+            foreach ($session as $key => $value) session()->setFlash($key, $value);
+        } else {
+            foreach ($session as $key => $value) session()->set($key, $value);
+        }
 
         header("Location: {$_SERVER['HTTP_REFERER']}");
 
@@ -114,6 +122,6 @@ class ResponseManager implements Response
 
     public function withoutCookie(string $key): bool
     {
-        return cookie()->destroy($key);
+        return cookie()->expire($key);
     }
 }

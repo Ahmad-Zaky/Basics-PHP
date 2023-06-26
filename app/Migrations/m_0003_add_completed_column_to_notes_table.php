@@ -2,9 +2,9 @@
 
 namespace App\Migrations;
 
-use Core\Migration;
+use Core\MigrationManager;
 
-class m_0003_add_completed_column_to_notes_table extends Migration
+class m_0003_add_completed_column_to_notes_table extends MigrationManager
 {
     public function up() 
     {

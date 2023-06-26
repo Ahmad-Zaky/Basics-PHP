@@ -12,13 +12,13 @@ interface DB
 
     public function raw(string $query): self;
 
-    public function query(string $query, array $params): self;
+    public function query(string $query, array $params = []): self;
 
-    public function get(int $options): array;
+    public function get(int $options = PDO::FETCH_DEFAULT): array;
 
-    public function find(int $options): mixed;
+    public function find(int $options = PDO::FETCH_DEFAULT): mixed;
 
-    public function findOrFail(int $options): mixed;
+    public function findOrFail(int $options = PDO::FETCH_DEFAULT): mixed;
 
     public function tables(): array;
 

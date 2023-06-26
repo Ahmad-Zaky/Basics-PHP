@@ -3,9 +3,10 @@
 namespace Core;
 
 use Core\Contracts\DB;
+use Core\Contracts\Migration;
 use PDO;
 
-class Migration
+class MigrationManager implements Migration
 {
     public array $migrations = [];
 
@@ -34,7 +35,7 @@ class Migration
         $this->db = app(DB::class);
     }
 
-    public function migrate()
+    public function migrate(): void
     {
         if ($this->isFreshAction()){
             $this->cleanMigrations();
@@ -48,7 +49,7 @@ class Migration
     }
 
     // TODO: should be refactored move db logic to db class
-    public function createMigrationsTable()
+    public function createMigrationsTable(): void
     {
         $this->db
             ->raw(
@@ -60,7 +61,7 @@ class Migration
             );
     }
 
-    public function getMigrations() 
+    public function getMigrations(): array
     {
         return $this->migrations = $this->db
             ->query('SELECT migration FROM migrations')
@@ -68,38 +69,38 @@ class Migration
     }
 
     // TODO: should be refactored move db logic to db class
-    public function addCreatedMigrations(array $migrations) 
+    public function addCreatedMigrations(array $migrations): void 
     {
         $query = implode(', ', array_map(fn($m) => "('{$m}')", $migrations));
 
         $this->db->query("INSERT INTO migrations (migration) VALUES $query");
     }
     
-    public function isFreshAction() 
+    public function isFreshAction(): bool
     {        
         global $argv;
 
         return ($argv[1] ?? "") === "fresh";
     }
     
-    public function isDownAction() 
+    public function isDownAction(): bool
     {        
         global $argv;
 
         return ($argv[1] ?? "") === "down";
     }
 
-    public function cleanMigrations() 
+    public function cleanMigrations(): void
     {
         $this->db->query("DELETE FROM migrations");
     }
-    
-    public function dropAllTables()
+
+    public function dropAllTables(): void
     {
         $this->log("Dropping tables ...");
 
         $this->db->raw("SET FOREIGN_KEY_CHECKS = 0");
-        
+
         $tables = $this->tables();
         foreach ($tables as $table) {
             if ($table === "migrations") continue;
@@ -110,7 +111,7 @@ class Migration
         $this->db->raw("SET FOREIGN_KEY_CHECKS = 1");
     }
 
-    public function tables() 
+    public function tables(): array
     {
         $dbName = config("database.connection.dbname") ?? NULL;
 
@@ -125,14 +126,14 @@ class Migration
         )->get(PDO::FETCH_COLUMN);
     }
 
-    public function log($message, $color = self::GREEN_COLOR, $withDate = true) 
+    public function log(string $message, string $color = self::GREEN_COLOR, bool $withDate = true): void
     {
         $date = $withDate ? "[". date("Y-m-d H:i:s") ."] " : "";
 
         echo PHP_EOL . $color . $date . $message . PHP_EOL;
     }
 
-    protected function upMigration()
+    protected function upMigration(): void
     {
         $files = scandir(migrationsPath());
         $notMigrated = array_diff($files, $this->migrations);
@@ -163,10 +164,10 @@ class Migration
         $this->addCreatedMigrations($createdMigrations);
     }
 
-    protected function downMigration()
+    protected function downMigration(): void
     {
         $this->cleanMigrations();
-        
+
         $migrations = array_reverse(scandir(migrationsPath()));
 
         foreach ($migrations as $migration) {
@@ -182,16 +183,16 @@ class Migration
             $this->db->raw("SET FOREIGN_KEY_CHECKS = 0");
 
             (new $class)->down();
-            
+
             $this->db->raw("SET FOREIGN_KEY_CHECKS = 1");
-            
+
             $this->log("Down migration {$file} Ended");
 
             $createdMigrations[] = $migration;
         }
     }
 
-    public function execute($query) 
+    public function execute(string $query): void
     {
         if ($query) $this->db->raw($query);
     }
