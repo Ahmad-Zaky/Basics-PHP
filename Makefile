@@ -12,5 +12,8 @@ migrate\:fresh:
 migrate\:down:
 	cd app/Commands && php -f migrate.php down
 
+test:
+	./vendor/bin/pest $(group)
+
 serve:
 	php -S localhost:5000 -t public
