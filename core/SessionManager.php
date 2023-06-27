@@ -49,14 +49,19 @@ class SessionManager implements Session
         ];
     }
 
-    public function getFlash($key): ?string
+    public function getFlash($key): mixed
     {
         return $_SESSION[self::FLASH][$key]["message"] ?? NULL;
     }
 
-    public function destroy(): void
+    public function flush(): void
     {
         $_SESSION = [];
+    }
+
+    public function destroy(): void
+    {
+        $this->flush();
         session_destroy();
 
         $params = session_get_cookie_params();
@@ -99,7 +104,7 @@ class SessionManager implements Session
             "email" => $user->email
         ];
 
-        session_regenerate_id();
+        session_regenerate_id(true);
     }
 
     function __destruct()

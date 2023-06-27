@@ -10,4 +10,6 @@ return [
     "url" => env("APP_URL", "http://localhost:5000"),
 
     'authenticatable' => \App\Models\User::class,
+
+    'authenticatable_col' => 'email',
 ];

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use Core\Controller;
 use App\Models\User;
+use Core\Contracts\Auth;
 use Core\Contracts\Validator;
 use Exception;
 
@@ -16,14 +17,8 @@ class AuthController extends Controller
 
     public function signin()
     {
-        if (validate(User::rules()["signin"])) {
-            $data = app(Validator::class)->validated();
-
-            $user = User::findByEmail($data["email"]);
-
-            if ($user && verifyHash($data["password"], $user->password)) {
-                signin($user);
-
+        if (validate(User::rules()["signin"])) {            
+            if (app(Auth::class)->attempt(app(Validator::class)->validated())) {
                 redirect(route("home"));
             }
 

@@ -14,7 +14,9 @@ interface Session
 
     public function setFlash(string $key, mixed $message): void;
 
-    public function getFlash($key): ?string;
+    public function getFlash($key): mixed;
+
+    public function flush(): void;
 
     public function destroy(): void;
 

@@ -15,8 +15,11 @@ use Core\Contracts\{
     Migration,
     Request,
     Session,
-    Validator
+    Validator,
+    View
 };
+
+use Core\Facades\Route;
 
 use Core\Exceptions\{
     ForbiddenException,
@@ -44,19 +47,24 @@ class App
 
         App::setContainer($container);
 
+        // Bind Facades
+        $this->singletonList([
+            'router' => fn() => new RouterManage,
+        ]);
+
+        // Bind Contracts
         $this->singletonList([
             Config::class => fn() => new ConfigManager,
             DB::class => fn() => DatabaseManager::getInstance(config("database.connection")),
             Session::class => fn() => new SessionManager,
             Cookie::class => fn() => new CookieManager,
             Auth::class => fn() => new AuthenticationManager,
-            Router::class => fn() => new Router,
             Request::class => fn() => new RequestManager,
             Validator::class => fn() => new ValidatorManager,
             Middleware::class => fn() => new MiddlewareManager,
             Controller::class => fn() => new Controller,
             Model::class => fn() => new Model,
-            View::class => fn() => new View,
+            View::class => fn() => new ViewManager,
             Response::class => fn() => new ResponseManager,
             Migration::class => fn() => new MigrationManager,
             Event::class => fn() => new EventManager,
@@ -66,7 +74,7 @@ class App
     public function run()
     {
         try {
-            Router::route();
+            Route::route();
         } catch (ForbiddenException $e) {
             abort(Response::HTTP_FORBIDDEN, $e->getMessage());
         } catch (ModelNotFoundException $e) {

@@ -1,10 +1,6 @@
 <?php
 
-use Core\{
-    App,
-    Router,
-    View,
-};
+use Core\App;
 
 use Core\Contracts\{
     Cookie,
@@ -15,8 +11,10 @@ use Core\Contracts\{
     Migration,
     Event,
     Session,
-    Validator
+    Validator,
+    View,
 };
+use Core\Facades\Route;
 
 use Core\Exceptions\ForbiddenException;
 
@@ -269,7 +267,7 @@ if (! function_exists("app")) {
  * @return void
  */
 if (! function_exists("old")) {
-    function old(string $key, mixed $default = NULL): string
+    function old(string $key, mixed $default = NULL): mixed
     {
         return session()->getFlash("old")[$key] ?? $default;
     }
@@ -347,7 +345,7 @@ if (! function_exists('dump')) {
 if (! function_exists('urlIs')) {
     function urlIs(string $value = ''): bool
     {
-        return app(Router::class)->urlIs($value);
+        return Route::urlIs($value);
     }
 }
 
@@ -360,7 +358,7 @@ if (! function_exists('urlIs')) {
 if (! function_exists('urlIn')) {
     function urlIn(array $routes): bool
     {
-        return app(Router::class)->urlIn($routes);
+        return Route::urlIn($routes);
     }
 }
 
@@ -534,7 +532,7 @@ if (! function_exists('formatText')) {
 if (! function_exists('route')) {
     function route(string $name, array $params = []): string|NULL
     {
-        return Router::getRoute($name, $params);
+        return Route::getRoute($name, $params);
     }
 }
 

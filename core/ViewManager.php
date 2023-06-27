@@ -2,9 +2,11 @@
 
 namespace Core;
 
-class View
+use Core\Contracts\View;
+
+class ViewManager implements View
 {
-    public function render($path = "", $attributes = []) 
+    public function render(string $path = "", array $attributes = []): void
     {
         extract($attributes);
 
