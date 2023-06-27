@@ -21,7 +21,7 @@ class User extends Model implements Authenticatable
                 "email" => ["required", "email", "unique:users,email", function ($attribute, $value, $fail) {
                     $email = explode('@', $value);
                     if (strpos(($email[1] ?? ""), "gmail.com") === false) {
-                        $fail("Email should be a gmail email address.");
+                        $fail(__("Email should be a gmail email address."));
                     }
                 }],
                 "password" => "required|confirmed|min:6",

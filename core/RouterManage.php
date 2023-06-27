@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use Closure;
 use Exception;
 use Core\Contracts\{Request, Middleware};
 use Core\Exceptions\RouteNotFoundException;
@@ -15,11 +16,25 @@ class RouterManage implements Router
 
     protected static array $routes = [];
 
+    protected bool $isResource = false;
+
+    protected string $resourceUri = '';
+
     protected static string $pattern = "#^%s$#siD";
 
     protected static string $paramPattern = "[a-zA-Z0-9]*";
 
     protected static string $wildcard = '/\{(.*?)\}/';
+
+    protected static array $resourceRoutes = [
+        'index'  => ["method" => "GET", "uri" => ""],
+        'create' => ["method" => "GET", "uri" => "/create"],
+        'show' => ["method" => "GET", "uri" => "/{id}"],
+        'store' => ["method" => "POST", "uri" => ""],
+        'edit' => ["method" => "GET", "uri" => "/{id}/edit"],
+        'update' => ["method" => "PUT", "uri" => "/{id}"],
+        'delete' => ["method" => "DELETE", "uri" => "/{id}"],
+    ];
 
     public static function GET(string $uri, array $controller): self
     {
@@ -44,6 +59,68 @@ class RouterManage implements Router
     public static function DELETE(string $uri, array $controller): self
     {
         return self::register($uri, $controller, __FUNCTION__);
+    }
+
+    public static function resource(string $uri, array $controller): self
+    {
+        foreach (self::$resourceRoutes as $key => $resourceRoute) {
+            $route = self::{$resourceRoute['method']}(
+                $uri.$resourceRoute['uri'],
+                array_merge($controller, [$key])
+            );
+
+            $route->name($uri.'.'.$key);
+        }
+
+        $instance = new self;
+        $instance->isResource = true;
+        $instance->resourceUri = $uri;
+
+        return $instance;
+    }
+
+    public function group(array $params, Closure $callback): void
+    {
+        $beforeCount = count(self::$routes);
+        
+        if (is_callable($callback)) {
+            ($callback)();
+        }
+
+        $afterCount = count(self::$routes);
+
+        if ($addedCount = $afterCount - $beforeCount) {
+            $this->handleGroupParams($params, $addedCount);
+        }
+    }
+
+    public function handleGroupParams(array $params, int $addedCount): void
+    {
+        while ($addedCount) {
+            $index = count(self::$routes) - $addedCount;
+            $addedCount--;
+            
+            foreach ($params as $key => $param) {
+                switch ($key) {
+                    case 'prefix':
+                        $this->addPrefix($index, $param);
+                        break;
+                    case 'middleware':
+                        $this->addMiddleware($index, $param);
+                        break;
+                }
+            }
+        }
+    }
+
+    protected function addPrefix(int $index, string $prefix): void
+    {
+        self::$routes[$index]["uri"] = '/'. $prefix . self::$routes[$index]["uri"];
+    }
+
+    protected function addMiddleware(int $index, array $middlewares): void
+    {
+        self::$routes[$index]["middlewares"] = array_merge(self::$routes[$index]["middlewares"], $middlewares);
     }
 
     protected static function register(string $uri, array $controller, string $method, array $middlewares = [], ?string $name = NULL): self
@@ -149,7 +226,7 @@ class RouterManage implements Router
         $routeUriParts = explode("/", $routeUri);
 
         if (! empty($routeUriParts) && count($routeUriParts) !== count($uriParts)) {
-            throw new Exception("Failed to fetch route parameters !");
+            throw new Exception(__("Failed to fetch route parameters !"));
         }
 
         $params = [];
@@ -192,18 +269,60 @@ class RouterManage implements Router
         return NULL;
     }
 
+    protected static function findRoute(string $name): ?array
+    {
+        foreach (self::$routes as $key => $route) {
+            if ($route["name"] !== $name) {
+                continue;
+            }
+
+            return [$key, $route];
+        }
+
+        return NULL;
+    }
+
     public function middleware(mixed $middleware): self
     {
-        self::$routes[array_key_last(self::$routes)]["middlewares"] = is_array($middleware) ? $middleware : [$middleware];
+        if ($this->isResource) {
+            $this->assignResourceRoutesMiddleware($middleware);
+
+            return $this;
+        }
+
+        self::$routes[array_key_last(self::$routes)]["middlewares"] = is_array($middleware)
+            ? array_merge(self::$routes[array_key_last(self::$routes)]["middlewares"], $middleware)
+            : array_merge(self::$routes[array_key_last(self::$routes)]["middlewares"], [$middleware]);
+
+        return $this;
+    }
+
+    protected function assignResourceRoutesMiddleware(mixed $middleware): self
+    {
+        foreach (self::$resourceRoutes as $key => $_) {
+            if (! $found = self::findRoute($this->resourceUri.'.'.$key)) {
+                continue;
+            }
+
+            self::$routes[$found[0]]["middlewares"] = is_array($middleware)
+                ? array_merge($found[0]["middlewares"] ?? [], $middleware)
+                : array_merge($found[0]["middlewares"] ?? [], [$middleware]);
+        }    
 
         return $this;
     }
 
     public function name(string $name): self
     {
+        if ($this->isResource) {
+            throw new Exception(__("Could not assign name to resource route !"));
+        }
+
         foreach (self::$routes as $route) {
             if ($route["name"] === $name) {
-                throw new Exception("'{$name}' route name already uesed by another route !");
+                throw new Exception(__("':name' route name already uesed by another route !", [
+                    'name' => $name
+                ]));
             }
         }
 
@@ -253,7 +372,7 @@ class RouterManage implements Router
         return strtoupper($method);
     }
 
-    public static function getRoutes(): array
+    public function getRoutes(): array
     {
         return self::$routes;
     }
@@ -263,7 +382,9 @@ class RouterManage implements Router
         foreach ($uriParams as $uriParam) {
             if (array_key_exists($uriParam, $params)) continue;
 
-            throw new Exception("'{$uriParam}' route parameter is missing !");
+            throw new Exception(__("':uriParam' route parameter is missing !", [
+                'uriParam' => $uriParam
+            ]));
         }
     }
 

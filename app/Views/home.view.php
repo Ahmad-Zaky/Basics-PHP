@@ -4,7 +4,11 @@
 
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-        <p>Hello, <strong><?= auth("name") ?? 'Guest' ?></strong>. Welcome to the home page.
+        <p>
+            <?= __("Hello, <strong>:name</strong>. Welcome to the home page.", [
+                "name" => auth("name") ?? __('Guest')
+            ]) ?>
+        </p>
     </div>
 </main>
 

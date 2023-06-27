@@ -4,22 +4,8 @@ namespace Core;
 
 use Exception;
 
-use Core\Contracts\{
-    Auth,
-    Config,
-    Cookie,
-    DB,
-    Event,
-    Middleware,
-    Response,
-    Migration,
-    Request,
-    Session,
-    Validator,
-    View
-};
-
-use Core\Facades\Route;
+use Core\Contracts\{Application, Response};
+use Core\Facades\{Route, Translation};
 
 use Core\Exceptions\{
     ForbiddenException,
@@ -27,7 +13,7 @@ use Core\Exceptions\{
     RouteNotFoundException
 };
 
-class App
+class App implements Application
 {
     public static string $ROOT_DIR;
 
@@ -41,37 +27,18 @@ class App
         self::$app = $this;
     }
 
-    public function boot()
+    public function boot(): void
     {
         $container = new Container;
 
         App::setContainer($container);
+        
+        $this->singletonList((new ConfigManager)->get('app.facades'));
 
-        // Bind Facades
-        $this->singletonList([
-            'router' => fn() => new RouterManage,
-        ]);
-
-        // Bind Contracts
-        $this->singletonList([
-            Config::class => fn() => new ConfigManager,
-            DB::class => fn() => DatabaseManager::getInstance(config("database.connection")),
-            Session::class => fn() => new SessionManager,
-            Cookie::class => fn() => new CookieManager,
-            Auth::class => fn() => new AuthenticationManager,
-            Request::class => fn() => new RequestManager,
-            Validator::class => fn() => new ValidatorManager,
-            Middleware::class => fn() => new MiddlewareManager,
-            Controller::class => fn() => new Controller,
-            Model::class => fn() => new Model,
-            View::class => fn() => new ViewManager,
-            Response::class => fn() => new ResponseManager,
-            Migration::class => fn() => new MigrationManager,
-            Event::class => fn() => new EventManager,
-        ]);
+        $this->singletonList((new ConfigManager)->get('app.contracts'));
     }
 
-    public function run()
+    public function run(): void
     {
         try {
             Route::route();
@@ -86,38 +53,48 @@ class App
         }
     }
 
-    public static function setContainer($container) 
+    public static function setContainer($container): void
     {
         static::$container = $container;
     }
 
-    public static function container()
+    public static function container(): Container
     {
         return static::$container;
     }
 
-    public function bind($key, $resolver)
+    public function bind(string $key, mixed $resolver): mixed
     {
         return static::container()->bind($key, $resolver);
     }
 
-    public function bindList($binds)
+    public function bindList(array $binds): mixed
     {
         return static::container()->bindList($binds);
     }
 
-    public function singleton($key, $resolver)
+    public function singleton(string $key, mixed $resolver): mixed
     {
         return static::container()->singleton($key, $resolver);
     }
 
-    public function singletonList($binds)
+    public function singletonList(array $binds): mixed
     {
         return static::container()->singletonList($binds);
     }
 
-    public static function resolve($key)
+    public static function resolve(string $key): mixed
     {
         return static::container()->resolve($key);
+    }
+
+    public function setLocal(?string $local): void
+    {
+        Translation::setLocal($local);
+    }
+
+    public function getLocal(string $local): string
+    {
+        return Translation::getLocal($local);
     }
 }

@@ -5,7 +5,7 @@
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         <p class="mb-6">
-            <a href="<?= route("home") ?>" class="text-blue-500 underline">Go Back ...</a>
+            <a href="<?= route("home") ?>" class="text-blue-500 underline"><?= __("Go Back ...") ?></a>
         </p>
 
         <form action="<?= route("signup") ?>" method="POST">
@@ -15,14 +15,14 @@
             <div class="shadow sm:overflow-hidden sm:rounded-md">
                 <div class="space-y-6 bg-white px-4 py-5 sm:p-6">
 
-                <h1 class="mb-8 text-3xl text-center">Sign up</h1>
+                <h1 class="mb-8 text-3xl text-center"><?= __("Sign up") ?></h1>
                     <input
                         required
                         type="text"
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="name"
                         value="<?= old("name", "") ?>"
-                        placeholder="Full Name" />
+                        placeholder="<?= __("Full Name") ?>" />
 
                     <?php if (hasErrors("name")): ?>
                         <?php view("partials.errors", ["formErrors" => errors("name")]); ?>
@@ -34,7 +34,7 @@
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="email"
                         value="<?= old("email", "") ?>"
-                        placeholder="Email" />
+                        placeholder="<?= __("Email") ?>" />
 
                     <?php if (hasErrors("email")): ?>
                         <?php view("partials.errors", ["formErrors" => errors("email")]); ?>
@@ -45,7 +45,7 @@
                         type="password"
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="password"
-                        placeholder="Password" />
+                        placeholder="<?= __("Password") ?>" />
 
                     <?php if (hasErrors("password")): ?>
                         <?php view("partials.errors", ["formErrors" => errors("password")]); ?>
@@ -56,12 +56,12 @@
                         type="password"
                         class="block border border-grey-light w-full p-3 rounded mb-4"
                         name="password_confirmation"
-                        placeholder="Confirm Password" />
+                        placeholder="<?= __("Confirm Password") ?>" />
 
                     <button
                         type="submit"
                         class="w-full text-center py-3 rounded bg-violet-700 text-white hover:bg-violet-900 focus:outline-none my-1"
-                    >Submit</button>
+                    ><?= __("Submit") ?></button>
 
                 </div>
             </div>

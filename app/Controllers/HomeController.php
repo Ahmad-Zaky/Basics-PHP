@@ -7,7 +7,7 @@ use Core\Controller;
 class HomeController extends Controller
 {
     function __invoke()
-    {
-        view("home", ["heading" => "Home"]);
+    {        
+        view("home", ["heading" => __("Home")]);
     }
 }

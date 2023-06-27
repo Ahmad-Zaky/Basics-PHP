@@ -102,7 +102,10 @@ class Model implements ModelContract
         $db = app(DB::class);
         $table = self::getTable();
 
-        return self::calledClassInstance()->buildModels($db->query("SELECT * FROM {$table}")->get());
+        return self::calledClassInstance()
+            ->buildModels(
+                $db->query("SELECT * FROM {$table}")->get()
+            );
     }
 
     public static function find(int $id): mixed
@@ -120,7 +123,11 @@ class Model implements ModelContract
         $db = app(DB::class);
         $table = self::getTable();
 
-        return self::calledClassInstance()->buildModel($db->query("SELECT * FROM {$table} WHERE id = :id", ["id" => $id])->findOrFail());
+        return self::calledClassInstance()
+            ->buildModel(
+                $db->query("SELECT * FROM {$table} WHERE id = :id", ["id" => $id])
+                    ->findOrFail()
+            );
     }
 
     public static function create(array $data): mixed
@@ -132,7 +139,8 @@ class Model implements ModelContract
         $placeHolders = implode(', ', array_fill(0, count($data), "?"));
 
         if ($db->query("INSERT INTO {$table} ({$fields}) VALUES ({$placeHolders})", array_values($data))) {
-            return self::calledClassInstance()->buildModel(array_merge($data, ["id" => $db->lastId()]));
+            return self::calledClassInstance()
+                ->buildModel(array_merge($data, ["id" => $db->lastId()]));
         }
 
         return NULL;

@@ -2,7 +2,7 @@
 
 namespace Core;
 
-use Core\Contracts\{Auth, Authenticatable};
+use Core\Contracts\{Auth, Authenticatable, Config, Session};
 
 class AuthenticationManager implements Auth
 {
@@ -12,10 +12,10 @@ class AuthenticationManager implements Auth
     
     protected Authenticatable|NULL $auth = NULL;
 
-    function __construct()
+    function __construct(Config $config, protected Session $session)
     {
-        $this->class = config("app.authenticatable");
-        $this->column = config("app.authenticatable_col");
+        $this->class = $config->get("app.authenticatable");
+        $this->column = $config->get("app.authenticatable_col");
 
         $this->user();
     }
@@ -24,7 +24,7 @@ class AuthenticationManager implements Auth
     {
         if ($this->auth) return $this->auth;
 
-        return $this->auth = ($id = session("user")["id"] ?? NULL) ? ($this->class)::find($id) : NULL;
+        return $this->auth = ($id = $this->session->get("user")["id"] ?? NULL) ? ($this->class)::find($id) : NULL;
     }
 
     public function attempt(array $credentials): bool

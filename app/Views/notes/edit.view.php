@@ -5,7 +5,7 @@
 <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         <p class="mb-6">
-            <a href="<?= route("notes.index") ?>" class="text-blue-500 underline">Go Back ...</a>
+            <a href="<?= route("notes.index") ?>" class="text-blue-500 underline"><?= __("Go Back ...") ?></a>
         </p>
 
         <form action="<?= route("notes.update", ["id" => $note->id]) ?>" method="POST">
@@ -27,7 +27,7 @@
                                 minlength="50"
                                 rows="3"
                                 class="mt-1 block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:py-1.5 sm:text-sm sm:leading-6"
-                                placeholder="Here's an idea for a note ..."
+                                placeholder="<?= __("Here's an idea for a note ...") ?>"
                             ><?= old("body", $note->body) ?></textarea>
 
                             <?php if (hasErrors("body")): ?>
@@ -56,7 +56,7 @@
                                 value="<?= old("completed", $note->completed) ?>"
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             >
-                            <label for="completed" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Completed</label>
+                            <label for="completed" class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"><?= __("Completed") ?></label>
                         </div>
 
                         <?php if (hasErrors("completed")): ?>
@@ -68,7 +68,7 @@
                     <?php if ($note->completed): ?>
                         <div>
                             <div class="flex items-center mb-4">
-                                <label for="completed" class="text-sm font-medium text-gray-900 dark:text-gray-300">Completed At:&nbsp;</label>
+                                <label for="completed" class="text-sm font-medium text-gray-900 dark:text-gray-300"><?= __("Completed At") ?>:&nbsp;</label>
                                 <small><?= $note->completed_at ?></small>
                             </div>        
                         </div>
@@ -76,8 +76,8 @@
 
                 </div>
                 <div class="bg-gray-50 px-4 py-3 text-right sm:px-6">
-                    <a href="<?= route("notes.index") ?>" class="inline-flex justify-center rounded-md bg-gray-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500">Cancel</a>
-                    <button type="submit" class="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Update</button>
+                    <a href="<?= route("notes.index") ?>" class="inline-flex justify-center rounded-md bg-gray-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500"><?= __("Cancel") ?></a>
+                    <button type="submit" class="inline-flex justify-center rounded-md bg-indigo-600 py-2 px-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"><?= __("Update") ?></button>
                 </div>
             </div>
         </form>

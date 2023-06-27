@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
     public function signinForm()
     {
-        view("auth.signin", ["heading" => 'Sign In']);        
+        view("auth.signin", ["heading" => __('Sign In')]);        
     }
 
     public function signin()
@@ -23,16 +23,16 @@ class AuthController extends Controller
             }
 
             back([
-                "errors" => ["email" => ["Email or Password doesn't exists"]]
+                "errors" => ["email" => [__("Email or Password doesn't exists")]]
             ], true);
         }
 
-        redirect(route("home"));            
+        redirect(route("home"));
     }
 
     public function signupForm()
     {
-        view("auth.signup", ["heading" => 'Sign Up']);
+        view("auth.signup", ["heading" => __('Sign Up')]);
     }
 
     public function signup()
@@ -46,7 +46,7 @@ class AuthController extends Controller
                 "password" => bcrypt($data["password"]),
             ]);
 
-            if (! $user) throw new Exception("Failed to signup !");
+            if (! $user) throw new Exception(__("Failed to signup !"));
 
             signin($user);
         }

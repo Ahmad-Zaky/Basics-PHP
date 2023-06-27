@@ -8,6 +8,6 @@ class ContactController extends Controller
 {
     function __invoke()
     {
-        view("contact", ["heading" => 'Contact Us']);
+        view("contact", ["heading" => __('Contact Us')]);
     }
 }

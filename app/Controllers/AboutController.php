@@ -8,6 +8,6 @@ class AboutController extends Controller
 {
     function __invoke()
     {
-        view("about", ["heading" => 'About Us']);
+        view("about", ["heading" => __('About Us')]);
     }
 }

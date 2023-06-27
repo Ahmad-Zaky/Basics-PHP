@@ -10,8 +10,6 @@ class MigrationManager implements Migration
 {
     public array $migrations = [];
 
-    public DB $db;
-
     const BLACK_COLOR = "\033[01;30m";
     const RED_COLOR = "\033[01;31m";
     const GREEN_COLOR = "\033[01;32m";
@@ -30,10 +28,8 @@ class MigrationManager implements Migration
     const LIGHT_CYAN_COLOR = "\033[01;96m";
     const WHITE_COLOR = "\033[01;97m";
     
-    function __construct()
-    {
-        $this->db = app(DB::class);
-    }
+    function __construct(protected DB $db)
+    {}
 
     public function migrate(): void
     {

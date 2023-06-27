@@ -2,7 +2,7 @@
 
 namespace Core;
 
-use Core\Contracts\Request;
+use Core\Contracts\{Request, Session};
 
 class RequestManager implements Request
 {
@@ -10,17 +10,17 @@ class RequestManager implements Request
 
     protected array $uriParams;
 
-    function __construct() {
+    function __construct(protected Session $session) {
         $this->setBody();
         $this->setOldBody();
     }
-    
+
     public function setOldBody(): void
     {
         if (in_array($this->method(), ["POST", "PUT", "PATCH"])) {
             if (! isset($_POST)) return;
 
-            session()->setFlash("old", $_POST);
+            $this->session->setFlash("old", $_POST);
         }
     }
 
@@ -84,6 +84,11 @@ class RequestManager implements Request
     public function isDelete(): bool
     {
         return $this->method() === 'DELETE';
+    }
+    
+    public function isReading(string $method): bool
+    {
+        return in_array($method, ['HEAD', 'GET', 'OPTIONS']);
     }
 
     public function method(): string|NULL

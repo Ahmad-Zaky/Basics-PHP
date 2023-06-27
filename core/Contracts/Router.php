@@ -36,7 +36,7 @@ interface Router
 
     public static function getMethod(): string;
 
-    public static function getRoutes(): array;
+    public function getRoutes(): array;
 
     public static function validateParams(array $uriParams, array $params): void;
 

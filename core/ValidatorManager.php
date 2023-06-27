@@ -231,7 +231,8 @@ class ValidatorManager implements Validator
     protected static function messages(string $rule): ?string
     {
         if (empty(self::$messages)) {
-            self::$messages = require corePath("error_messages.php");
+            $local = app()->getLocal();
+            self::$messages = require localPath($local . DIRECTORY_SEPARATOR ."validation.php");
         }
 
         return self::$messages[$rule] ?? NULL;

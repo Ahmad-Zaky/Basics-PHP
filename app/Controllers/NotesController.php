@@ -13,7 +13,7 @@ class NotesController extends Controller
         $notes = Note::all();
 
         view("notes.index", [
-            "heading" => 'My Notes',
+            "heading" => __('My Notes'),
             "module" => "notes",
             "notes" => $notes
         ]);        
@@ -26,7 +26,7 @@ class NotesController extends Controller
         authorize($note->user_id === auth("id"));
 
         view("notes.show", [
-            "heading" => 'Note',
+            "heading" => __('Note'),
             "module" => "notes",
             "note" => $note
         ]);
@@ -35,7 +35,7 @@ class NotesController extends Controller
     public function create()
     {
         view("notes.create", [
-            "heading" => 'Create Note',
+            "heading" => __('Create Note'),
             "module" => "notes",
         ]);
     }
@@ -60,7 +60,7 @@ class NotesController extends Controller
         authorize($note->user_id === auth("id"));
 
         view("notes.edit", [
-            "heading" => 'Edit Note',
+            "heading" => __('Edit Note'),
             "module" => "notes",
             "note" => $note
         ]);

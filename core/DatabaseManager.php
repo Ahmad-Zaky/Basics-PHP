@@ -125,12 +125,12 @@ class DatabaseManager implements DB
     }
 
     final public function __clone() {
-        throw new Exception("Can't clone a singleton");
+        throw new Exception(__("Can't clone a singleton"));
     }
 
     final public function __wakeup()
     {
-        throw new Exception("Can't clone a singleton");
+        throw new Exception(__("Can't clone a singleton"));
     }
 
     final public function __destruct()

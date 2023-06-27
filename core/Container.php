@@ -44,7 +44,9 @@ class Container
     public function resolve($key)
     {
         if (! array_key_exists($key, $this->bindings)) {
-            throw new Exception("No matching binding found for your {$key} !");
+            throw new Exception(__("No matching binding found for your :key !", [
+                'key' => $key
+            ]));
         }
 
         $resolver = $this->bindings[$key];

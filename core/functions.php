@@ -14,7 +14,7 @@ use Core\Contracts\{
     Validator,
     View,
 };
-use Core\Facades\Route;
+use Core\Facades\{Route, Translation};
 
 use Core\Exceptions\ForbiddenException;
 
@@ -472,6 +472,18 @@ if (! function_exists('viewsPath')) {
 }
 
 /**
+ * localPath function
+ *
+ * @return string
+ */
+if (! function_exists('localPath')) {
+    function localPath(string $path = ""): string
+    {
+        return appPath("Localizations". DIRECTORY_SEPARATOR ."{$path}.php");
+    }
+}
+
+/**
  * partialsPath function
  *
  * @return string
@@ -696,5 +708,27 @@ if (! function_exists('now')) {
     function now(string $format = 'Y-m-d H:i:s'): string|false
     {
         return date($format);
+    }
+}
+
+if (! function_exists('__')) {
+    function __(
+        string $key = null,
+        array $replace = [],
+        string $locale = null,
+        string $file = 'general'
+    ): string {
+        $toTranslate = "{$file}.{$key}";
+        if (
+            ! $translated = Translation::trans(
+                $toTranslate,
+                $replace,
+                $locale
+            )
+        ) {
+            return Translation::replace($key, $replace); 
+        }
+
+        return $translated;
     }
 }

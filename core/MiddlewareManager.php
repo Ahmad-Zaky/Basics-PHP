@@ -19,7 +19,9 @@ class MiddlewareManager implements Middleware
         if (! $key) return;
 
         if (! $middleware = (config("middleware.custom")[$key] ?? NULL)) {
-            throw new Exception("'{$key}' middleware not found !");
+            throw new Exception(__("':key' middleware not found !", [
+                "key" => $key
+            ]));
         }
 
         (new $middleware)->handle();

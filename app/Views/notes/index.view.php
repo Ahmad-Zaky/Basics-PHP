@@ -6,7 +6,7 @@
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
         <div class="mb-6">
             <a href="<?= route("notes.create") ?>" class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
-                Create Note +
+                <?= __("Create Note +") ?>
             </a>
         </div>
 

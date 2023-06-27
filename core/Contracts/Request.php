@@ -24,6 +24,8 @@ interface Request
 
     public function isDelete(): bool;
 
+    public function isReading(string $method): bool;
+
     public function method(): string|NULL;
 
     public function body(): array;
