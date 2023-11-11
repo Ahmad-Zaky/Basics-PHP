@@ -4,30 +4,13 @@ namespace Core;
 
 use Core\Contracts\DB;
 use Core\Contracts\Migration;
+use Core\CommandColors;
 use PDO;
 
 class MigrationManager implements Migration
 {
     public array $migrations = [];
 
-    const BLACK_COLOR = "\033[01;30m";
-    const RED_COLOR = "\033[01;31m";
-    const GREEN_COLOR = "\033[01;32m";
-    const YELLOW_COLOR = "\033[01;33m";
-    const BLUE_COLOR = "\033[01;34m";
-    const MAGENTA_COLOR = "\033[01;35m";
-    const CYAN_COLOR = "\033[01;36m";
-    const LIGHT_GRAY_COLOR = "\033[01;37m";
-    const DEFAULT_COLOR = "\033[01;39m";
-    const DARK_GRAY_COLOR = "\033[01;90m";
-    const LIGHT_RED_COLOR = "\033[01;91m";
-    const LIGHT_GREEN_COLOR = "\033[01;92m";
-    const LIGHT_YELLOW_COLOR = "\033[01;93m";
-    const LIGHT_BLUE_COLOR = "\033[01;94m";
-    const LIGHT_MAGENTA_COLOR = "\033[01;95m";
-    const LIGHT_CYAN_COLOR = "\033[01;96m";
-    const WHITE_COLOR = "\033[01;97m";
-    
     function __construct(protected ?DB $db = null)
     {
         if (! isset($this->db)) $this->db = app(DB::class); 
@@ -124,7 +107,7 @@ class MigrationManager implements Migration
         )->get(PDO::FETCH_COLUMN);
     }
 
-    public function log(string $message, string $color = self::GREEN_COLOR, bool $withDate = true): void
+    public function log(string $message, string $color = CommandColors::GREEN_COLOR, bool $withDate = true): void
     {
         $date = $withDate ? "[". date("Y-m-d H:i:s") ."] " : "";
 
@@ -155,7 +138,7 @@ class MigrationManager implements Migration
         }
 
         if (empty($createdMigrations)) {
-            $this->log("No migrations to migrate", self::RED_COLOR, false);
+            $this->log("No migrations to migrate", CommandColors::RED_COLOR, false);
             return;
         }
     
