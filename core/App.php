@@ -93,8 +93,8 @@ class App implements Application
         Translation::setLocal($local);
     }
 
-    public function getLocal(string $local): string
+    public function getLocal(): string
     {
-        return Translation::getLocal($local);
+        return Translation::getLocal();
     }
 }

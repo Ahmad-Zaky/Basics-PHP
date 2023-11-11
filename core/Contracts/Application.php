@@ -26,5 +26,5 @@ interface Application
 
     public function setLocal(string $local): void;
 
-    public function getLocal(string $local): string;
+    public function getLocal(): string;
 }
