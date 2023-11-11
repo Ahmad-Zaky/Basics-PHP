@@ -232,7 +232,7 @@ class ValidatorManager implements Validator
     {
         if (empty(self::$messages)) {
             $local = app()->getLocal();
-            self::$messages = require localPath($local . DIRECTORY_SEPARATOR ."validation.php");
+            self::$messages = require localPath($local . DIRECTORY_SEPARATOR ."validation");
         }
 
         return self::$messages[$rule] ?? NULL;
