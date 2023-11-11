@@ -28,8 +28,10 @@ class MigrationManager implements Migration
     const LIGHT_CYAN_COLOR = "\033[01;96m";
     const WHITE_COLOR = "\033[01;97m";
     
-    function __construct(protected DB $db)
-    {}
+    function __construct(protected ?DB $db = null)
+    {
+        if (! isset($this->db)) $this->db = app(DB::class); 
+    }
 
     public function migrate(): void
     {
