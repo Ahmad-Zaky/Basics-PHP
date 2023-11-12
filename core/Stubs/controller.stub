@@ -1,0 +1,10 @@
+<?php
+
+namespace {{ namespace }};
+
+use Core\Controller;
+
+class {{ class }} extends Controller
+{
+    // write your controller logic here ...
+}

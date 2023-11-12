@@ -1,0 +1,19 @@
+<?php
+
+namespace {{ namespace }};
+
+use Core\Model;
+
+class {{ class }} extends Model
+{
+    protected string $table = "{{ table }}";
+
+    public static function rules(string $key = NULL)
+    {
+        $rules = [
+            // write your request rules here ...
+        ];
+
+        return empty($key) ? $rules : ($rules[$key] ?? []);
+    }
+}
