@@ -1,7 +1,7 @@
 <?php
 
 use Core\App;
-
+use Core\CommandColors;
 use Core\Contracts\{
     Cookie,
     Config,
@@ -14,6 +14,7 @@ use Core\Contracts\{
     Validator,
     View,
 };
+use Core\Exceptions\FileNotFoundException;
 use Core\Facades\{Route, Translation};
 
 use Core\Exceptions\ForbiddenException;
@@ -31,6 +32,16 @@ if (! function_exists("env")) {
 }
 
 /**
+ * logging function
+ *
+ * @return void
+ */
+function logging(string $message, string $color = CommandColors::GREEN_COLOR, bool $withDate = true): void
+{
+    app(Log::class)->print($message, $color, $withDate);
+}
+
+/**
  * config function
  *
  * @return void
@@ -43,7 +54,43 @@ if (! function_exists("config")) {
 }
 
 /**
- * session function
+ * make function
+ *
+ * @return void
+ */
+if (! function_exists("make")) {
+    function make(string $makeable, string $name): void
+    {
+        app(Make::class)->handle($makeable, $name);
+    }
+}
+
+/**
+ * getMakeable function
+ *
+ * @return string
+ */
+if (! function_exists("getMakeable")) {
+    function getMakeable(array $arguments): string
+    {
+        return $arguments[1];
+    }
+}
+
+/**
+ * getMakeableName function
+ *
+ * @return string
+ */
+if (! function_exists("getMakeableName")) {
+    function getMakeableName(array $arguments): string
+    {
+        return $arguments[2];
+    }
+}
+
+/**
+ * migrate function
  *
  * @return void
  */
@@ -730,5 +777,244 @@ if (! function_exists('__')) {
         }
 
         return $translated;
+    }
+}
+
+/**
+ * Determine if a given string starts with a given substring.
+ *
+ * @param  string  $haystack
+ * @param  string|iterable<string>  $needles
+ * @return bool
+ */
+if (! function_exists('strStartsWith')) {
+    function strStartsWith(string $haystack, string|array $needles): bool
+    {
+        if (! is_iterable($needles)) {
+            $needles = [$needles];
+        }
+
+        foreach ($needles as $needle) {
+            if ((string) $needle !== '' && str_starts_with($haystack, $needle)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+/**
+ * Replace the first occurrence of a given value in the string.
+ *
+ * @param  string  $search
+ * @param  string  $replace
+ * @param  string  $subject
+ * @return string
+ */
+if (! function_exists('strReplaceFirst')) {
+    function strReplaceFirst(string $search, string $replace, string $subject): string
+    {
+        $search = (string) $search;
+    
+        if ($search === '') {
+            return $subject;
+        }
+    
+        $position = strpos($subject, $search);
+    
+        if ($position !== false) {
+            return substr_replace($subject, $replace, $position, strlen($search));
+        }
+    
+        return $subject;
+    }
+}
+
+if (! function_exists('version')) {
+    function version(): string
+    {
+        return app()->version();
+    }
+}
+
+/**
+ * Determine if the given path is a directory.
+ *
+ * @param  string  $directory
+ * @return bool
+ */
+if (! function_exists('isDirectory')) {
+    function isDirectory(string $directory): bool
+    {
+        return is_dir($directory);
+    }
+}
+
+/**
+ * Create a directory.
+ *
+ * @param  string  $path
+ * @param  int  $mode
+ * @param  bool  $recursive
+ * @param  bool  $force
+ * @return bool
+ */
+if (! function_exists('makeDirectory')) {
+    function makeDirectory(string $path, int $mode = 0755, bool $recursive = false, bool $force = false): bool
+    {
+        if ($force) {
+            return @mkdir($path, $mode, $recursive);
+        }
+    
+        return mkdir($path, $mode, $recursive);
+    }
+}
+
+/**
+ * Determine if the given path is readable.
+ *
+ * @param  string  $path
+ * @return bool
+ */
+if (! function_exists('isReadable')) {
+    function isReadable(string $path): bool
+    {
+        return is_readable($path);
+    }
+}
+
+/**
+ * Determine if the given path is writable.
+ *
+ * @param  string  $path
+ * @return bool
+ */
+if (! function_exists('isWritable')) {
+    function isWritable(string $path): bool
+    {
+        return is_writable($path);
+    }
+}
+/**
+ * Determine if the given path is writable.
+ *
+ * @param  string  $path
+ * @return bool
+ */
+if (! function_exists('isWritable')) {
+    function isWritable(string $path): bool
+    {
+        return is_writable($path);
+    }
+}
+
+/**
+ * Write the contents of a file.
+ *
+ * @param  string  $path
+ * @param  string  $contents
+ * @param  bool  $lock
+ * @return int|bool
+ */
+if (! function_exists('putFile')) {
+    function putFile(string $path, string $contents, bool $lock = false): int|bool
+    {
+        return file_put_contents($path, $contents, $lock ? LOCK_EX : 0);
+    }
+}
+
+/**
+ * Get the contents of a file.
+ *
+ * @param  string  $path
+ * @param  bool  $lock
+ * @return string
+ *
+ * @throws \Core\Exceptions\FileNotFoundException
+ */
+if (! function_exists('getFile')) {
+    function getFile(string $path, bool $lock = false): string
+    {
+        if (isFile($path)) {
+            return $lock ? sharedGetFile($path) : file_get_contents($path);
+        }
+    
+        throw new FileNotFoundException("File does not exist at path {$path}.");
+    }
+}
+
+/**
+ * Determine if the given path is a file.
+ *
+ * @param  string  $file
+ * @return bool
+ */
+if (! function_exists('isFile')) {
+    function isFile(string $file): bool
+    {
+        return is_file($file);
+    }
+}
+
+/**
+ * Get contents of a file with shared access.
+ *
+ * @param  string  $path
+ * @return string
+ */
+if (! function_exists('sharedGetFile')) {
+    function sharedGetFile(string $path): string
+    {
+        $contents = '';
+    
+        $handle = fopen($path, 'rb');
+    
+        if ($handle) {
+            try {
+                if (flock($handle, LOCK_SH)) {
+                    clearstatcache(true, $path);
+    
+                    $contents = fread($handle, getFileSize($path) ?: 1);
+    
+                    flock($handle, LOCK_UN);
+                }
+            } finally {
+                fclose($handle);
+            }
+        }
+    
+        return $contents;
+    }
+}
+
+/**
+ * Get the file size of a given file.
+ *
+ * @param  string  $path
+ * @return int
+ */
+if (! function_exists('getFileSize')) {
+    function getFileSize(string $path): int
+    {
+        return filesize($path);
+    }
+}
+
+/**
+ * Get the plural of a word.
+ *
+ * @param  string  $word
+ * @param  bool  $toLower
+ * @return string
+ */
+if (! function_exists('pluralize')) {
+    function pluralize(string $word, bool $toLower = false): string
+    {
+        $pluralizer = new \anytizer\pluralizer();
+
+        return $toLower 
+            ? strtolower( $pluralizer->pluralize($word))
+            :  $pluralizer->pluralize($word);
     }
 }
