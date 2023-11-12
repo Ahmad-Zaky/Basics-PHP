@@ -6,14 +6,17 @@ use Exception;
 
 class ModelNotFoundException extends Exception
 {
-    protected $message = "";
-
+    /**
+     * code variable
+     *
+     * @var integer
+     */
     protected $code = 404;
 
-    function __construct()
+    function __construct(protected string $messsage = "")
     {
         parent::__construct();
 
-        $this->message = __("Model not found.");
+        if (! $this->messsage) $this->message = __("Model not found.");
     }
 }

@@ -6,14 +6,17 @@ use Exception;
 
 class ForbiddenException extends Exception
 {
-    protected $message = '';
-    
+    /**
+     * code variable
+     *
+     * @var integer
+     */
     protected $code = 403;
     
-    function __construct()
+    function __construct(protected string $messsage = "")
     {
         parent::__construct();
 
-        $this->message = __("You don't have permission to access this page.");
+        if (! $this->messsage) $this->message = __("You don't have permission to access this page.");
     }
 }
