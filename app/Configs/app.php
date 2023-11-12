@@ -7,6 +7,8 @@ use Core\{
     CookieManager,
     DatabaseManager,
     EventManager,
+    LogManager,
+    MakeManager,
     MiddlewareManager,
     MigrationManager,
     Model,
@@ -18,6 +20,7 @@ use Core\{
     ValidatorManager,
     ViewManager
 };
+
 use Core\Contracts\{
     Auth,
     Config,
@@ -72,5 +75,7 @@ return [
         Response::class => fn() => new ResponseManager,
         Migration::class => fn() => new MigrationManager(DatabaseManager::getInstance((new ConfigManager)->get("database.connection"))),
         Event::class => fn() => new EventManager,
+        Make::class => fn() => new MakeManager,
+        Log::class => fn() => new LogManager,
     ]
 ];
