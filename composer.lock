@@ -4,8 +4,43 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2db6ee448283bd40ca88b68cb680822",
+    "content-hash": "95ea210c8f5e39c05cb068dd1981bacf",
     "packages": [
+        {
+            "name": "anytizer/pluralizer.php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/anytizer/pluralizer.php.git",
+                "reference": "d9d8d1784c18a1239918d394d105f668472339cb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/anytizer/pluralizer.php/zipball/d9d8d1784c18a1239918d394d105f668472339cb",
+                "reference": "d9d8d1784c18a1239918d394d105f668472339cb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "anytizer\\": "src/anytizer"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "Pluralizes a common word",
+            "keywords": [
+                "pluralizer"
+            ],
+            "support": {
+                "issues": "https://github.com/anytizer/pluralizer.php/issues",
+                "source": "https://github.com/anytizer/pluralizer.php/tree/master"
+            },
+            "time": "2018-09-21T17:37:38+00:00"
+        },
         {
             "name": "graham-campbell/result-type",
             "version": "v1.1.1",
@@ -3884,7 +3919,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "anytizer/pluralizer.php": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

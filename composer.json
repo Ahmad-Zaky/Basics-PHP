@@ -16,7 +16,8 @@
         }
     ],
     "require": {
-        "vlucas/phpdotenv": "^5.5"
+        "vlucas/phpdotenv": "^5.5",
+        "anytizer/pluralizer.php": "dev-master"
     },
     "require-dev": {
         "pestphp/pest": "^2.8"
