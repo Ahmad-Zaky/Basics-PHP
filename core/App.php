@@ -12,6 +12,7 @@ use Core\Exceptions\{
     ModelNotFoundException,
     RouteNotFoundException
 };
+use RuntimeException;
 
 class App implements Application
 {
@@ -19,12 +20,22 @@ class App implements Application
 
     public static self $app;
 
-    protected static $container;
+    protected static Container $container;
+
+    protected string $namespace;
+
+    /**
+     * The framework version.
+     *
+     * @var string
+     */
+    const VERSION = '1.0.0';
 
     function __construct($rootPath)
     {
         self::$ROOT_DIR = $rootPath;
         self::$app = $this;
+        $this->namespace = "App";
     }
 
     public function boot(): void
@@ -96,5 +107,36 @@ class App implements Application
     public function getLocal(): string
     {
         return Translation::getLocal();
+    }
+
+    /**
+     * Get the version number of the application.
+     *
+     * @return string
+     */
+    public function version(): string
+    {
+        return static::VERSION;
+    }
+
+    /**
+     * Get the application namespace.
+     *
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    public function getNamespace(): string
+    {
+        if (! is_null($this->namespace)) {
+            return $this->namespace;
+        }
+
+        throw new RuntimeException('Unable to detect application namespace.');
+    }
+
+    public function getPath(): string
+    {
+        return self::$ROOT_DIR.DIRECTORY_SEPARATOR.'app';
     }
 }
