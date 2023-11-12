@@ -27,4 +27,8 @@ interface Application
     public function setLocal(string $local): void;
 
     public function getLocal(): string;
+
+    public function getNamespace(): string;
+
+    public function getPath(): string;
 }
