@@ -1,13 +1,13 @@
 <?php
 
 return [
-    "required" => ":key is required",
-    "max" => ":key has exceeded the max :max",
-    "min" => ":key is less than the min :min",
-    "email" => "Invalid Email",
-    "url" => "Invalid url",
-    "exists" => ":key Not Found",
-    "unique" => ":key already exists",
-    "in" => ":key has invalid value",
-    "confirmed" => ":key1 doesn't match with :key2",
+    "required" => ":key الحقل مطلوب",
+    "max" => ":key وصل الى الحد الاقصى :max",
+    "min" => ":key اقل من الحد الادنى :min",
+    "email" => "بريد الكتورني غير مقبول",
+    "url" => "رابط غير مقبول",
+    "exists" => ":key غير موجود",
+    "unique" => ":key موجود مسبقا",
+    "in" => ":key لديه قيمة غير صحيحة",
+    "confirmed" => ":key1 لا يماثل :key2",
 ];
