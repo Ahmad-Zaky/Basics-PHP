@@ -78,7 +78,7 @@ class MigrationManager implements Migration
 
     public function dropAllTables(): void
     {
-        $this->log("Dropping tables ...");
+        logging("Dropping tables ...");
 
         $this->db->raw("SET FOREIGN_KEY_CHECKS = 0");
 
@@ -107,13 +107,6 @@ class MigrationManager implements Migration
         )->get(PDO::FETCH_COLUMN);
     }
 
-    public function log(string $message, string $color = CommandColors::GREEN_COLOR, bool $withDate = true): void
-    {
-        $date = $withDate ? "[". date("Y-m-d H:i:s") ."] " : "";
-
-        echo PHP_EOL . $color . $date . $message . PHP_EOL;
-    }
-
     protected function upMigration(): void
     {
         $files = scandir(migrationsPath());
@@ -128,17 +121,17 @@ class MigrationManager implements Migration
             $file = pathinfo($migration, PATHINFO_FILENAME);
             $class = '\App\Migrations\\'.$file;
             
-            $this->log("Creating migration {$file}");
-            
+            logging("Creating migration {$file}");
+
             (new $class)->up();
             
-            $this->log("Created migration {$file}");
+            logging("Created migration {$file}");
 
             $createdMigrations[] = $migration;
         }
 
         if (empty($createdMigrations)) {
-            $this->log("No migrations to migrate", CommandColors::RED_COLOR, false);
+            logging("No migrations to migrate", CommandColors::RED_COLOR, false);
             return;
         }
     
@@ -159,7 +152,7 @@ class MigrationManager implements Migration
             $file = pathinfo($migration, PATHINFO_FILENAME);
             $class = '\App\Migrations\\'.$file;
 
-            $this->log("Down migration {$file} Started");
+            logging("Down migration {$file} Started");
 
             $this->db->raw("SET FOREIGN_KEY_CHECKS = 0");
 
@@ -167,7 +160,7 @@ class MigrationManager implements Migration
 
             $this->db->raw("SET FOREIGN_KEY_CHECKS = 1");
 
-            $this->log("Down migration {$file} Ended");
+            logging("Down migration {$file} Ended");
 
             $createdMigrations[] = $migration;
         }
