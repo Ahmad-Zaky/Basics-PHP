@@ -12,7 +12,7 @@ class ConfigManager implements Config
 
         $file = $keyParts[0]; unset($keyParts[0]);
 
-        $config = require appPath("Config". DIRECTORY_SEPARATOR ."{$file}.php");
+        $config = require appPath("Configs". DIRECTORY_SEPARATOR ."{$file}.php");
 
         if (! empty($keyParts)) {
             $found = $config;
