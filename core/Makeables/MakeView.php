@@ -10,7 +10,7 @@ class MakeView extends Makeable implements MakeableContract
 
     public function make(string $name): void 
     {
-        parent::make($name);
+        parent::make($name.'.view');
     }
 
     /**
