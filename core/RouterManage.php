@@ -33,7 +33,7 @@ class RouterManage implements Router
         'store' => ["method" => "POST", "uri" => ""],
         'edit' => ["method" => "GET", "uri" => "/{id}/edit"],
         'update' => ["method" => "PUT", "uri" => "/{id}"],
-        'delete' => ["method" => "DELETE", "uri" => "/{id}"],
+        'destroy' => ["method" => "DELETE", "uri" => "/{id}"],
     ];
 
     public static function GET(string $uri, array|Closure $controller): self
