@@ -300,7 +300,7 @@ abstract class Makeable
      */
     protected function replaceClass(string $stub, string $name): string
     {
-        $class = str_replace($this->getDefaultNamespace($this->rootNamespace()).'\\', '', $name);
+        $class = str_replace($this->getNamespace($name).'\\', '', $name);
 
         return str_replace(['DummyClass', '{{ class }}', '{{class}}'], $class, $stub);
     }
@@ -314,7 +314,7 @@ abstract class Makeable
      */
     protected function replaceTable(string $stub, string $name): string
     {
-        $class = str_replace($this->getDefaultNamespace($this->rootNamespace()).'\\', '', $name);
+        $class = str_replace($this->getNamespace($name).'\\', '', $name);
 
         $table = $this->generateTableNameFromClass($class);
 
