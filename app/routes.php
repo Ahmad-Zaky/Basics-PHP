@@ -14,6 +14,7 @@ Route::GET("/", [HomeController::class])->name("index");
 Route::GET("home", [HomeController::class])->name("home");
 Route::GET("about", [AboutController::class])->name("about");
 Route::GET("contact", [ContactController::class])->name("contact");
+Route::GET("policy", fn () => view('policy', ["heading" => __("Policy")]))->name("policy");
 
 Route::group(['middleware' => ['guest']], function () {
     /*** AUTH ***/

@@ -16,6 +16,8 @@
                         <a href="<?= route("about") ?>" class="<?= urlIs(route("about")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium"><?= __("About Us") ?></a>
 
                         <a href="<?= route("contact") ?>" class="<?= urlIs(route("contact")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium"><?= __("Contact Us") ?></a>
+                        
+                        <a href="<?= route("policy") ?>" class="<?= urlIs(route("policy")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium"><?= __("Policy") ?></a>
 
                     </div>
                 </div>
@@ -95,6 +97,8 @@
                 <a href="<?= route("about") ?>" class="<?= urlIs(route("about")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium"><?= __("About Us") ?></a>
 
                 <a href="<?= route("contact") ?>" class="<?= urlIs(route("contact")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium"><?= __("Contact Us") ?></a>
+                
+                <a href="<?= route("policy") ?>" class="<?= urlIs(route("policy")) ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white" ?> block rounded-md px-3 py-2 text-base font-medium"><?= __("Policy") ?></a>
 
             </div>
             <div class="border-t border-gray-700 pt-4 pb-3">
