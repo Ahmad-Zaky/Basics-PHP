@@ -36,27 +36,27 @@ class RouterManage implements Router
         'delete' => ["method" => "DELETE", "uri" => "/{id}"],
     ];
 
-    public static function GET(string $uri, array $controller): self
+    public static function GET(string $uri, array|Closure $controller): self
     {
         return self::register($uri, $controller, __FUNCTION__);
     }
 
-    public static function POST(string $uri, array $controller): self
+    public static function POST(string $uri, array|Closure $controller): self
     {
         return self::register($uri, $controller, __FUNCTION__);
     }
 
-    public static function PUT(string $uri, array $controller): self
+    public static function PUT(string $uri, array|Closure $controller): self
     {
         return self::register($uri, $controller, __FUNCTION__);
     }
 
-    public static function PATCH(string $uri, array $controller): self
+    public static function PATCH(string $uri, array|Closure $controller): self
     {
         return self::register($uri, $controller, __FUNCTION__);
     }
 
-    public static function DELETE(string $uri, array $controller): self
+    public static function DELETE(string $uri, array|Closure $controller): self
     {
         return self::register($uri, $controller, __FUNCTION__);
     }
@@ -123,7 +123,7 @@ class RouterManage implements Router
         self::$routes[$index]["middlewares"] = array_merge(self::$routes[$index]["middlewares"], $middlewares);
     }
 
-    protected static function register(string $uri, array $controller, string $method, array $middlewares = [], ?string $name = NULL): self
+    protected static function register(string $uri, array|Closure $controller, string $method, array $middlewares = [], ?string $name = NULL): self
     {
         $uri = self::getRouteUri($uri);
 
