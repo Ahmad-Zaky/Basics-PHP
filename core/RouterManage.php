@@ -179,13 +179,17 @@ class RouterManage implements Router
 
     public static function execute(array $route): void
     {
-        if (is_callable($route["controller"])) {
-            ($route["controller"])(); exit;
-        }
-
         $parameters = self::uriParameters($route["uri"]);
-        
+
         self::addUriPararmsToRequest($parameters);
+
+        if (is_callable($closure = $route["controller"])) {
+            hasMethodParameterByType(type: Request::class, closure: $closure)
+                ? ($route["controller"])(app(Request::class), ...array_values($parameters))
+                : ($route["controller"])(...array_values($parameters));
+ 
+                exit;
+        }
 
         $controller = new $route["controller"][0];
         $action = $route["controller"][1] ?? NULL;
@@ -194,10 +198,8 @@ class RouterManage implements Router
             ? [app(Request::class), ...array_values($parameters)]
             : array_values($parameters);
 
-        $action 
-            ? $controller->{$action}(...$params)
-            : $controller(...array_values($parameters));
-        
+        $action ? $controller->{$action}(...$params) : $controller(...$params);
+
         exit;
     }
 

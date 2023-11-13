@@ -707,7 +707,29 @@ if (! function_exists('verifyHash')) {
 }
 
 if (! function_exists('methodParams')) {
-    function methodParams(string $className, string|NULL $methodName): array|NULL
+    function methodParams(string|NULL $methodName = '__invoke', ?Closure $closure = null): array|NULL
+    {
+        if (! $methodName) return NULL;
+        
+        $reflectionMethod = ! $closure && $methodName !== '__invoke'
+            ? new ReflectionFunction($methodName)
+            : new ReflectionMethod($closure, '__invoke');
+
+        $params = $reflectionMethod->getParameters();
+        $return = [];
+        foreach ($params as $param) {
+            $return[] = [
+                "name" => $param->getName(),
+                "type" => $param->getType()?->getName()
+            ];
+        }
+
+        return $return;
+    }
+}
+
+if (! function_exists('classMethodParams')) {
+    function classMethodParams(string $className, string|NULL $methodName): array|NULL
     {
         if (! $methodName) return NULL;
 
@@ -725,10 +747,23 @@ if (! function_exists('methodParams')) {
     }
 }
 
+if (! function_exists('hasMethodParameterByType')) {
+    function hasMethodParameterByType(?string $method = '__invoke', ?string $type = null, ?Closure $closure = null): bool
+    {
+        if (! $params = methodParams($method, $closure)) return false;        
+
+        foreach ($params as $param) {
+            if ($type === $param["type"]) return true;
+        }
+
+        return false;
+    }
+}
+
 if (! function_exists('hasParameterByType')) {
     function hasParameterByType(string $class, string|NULL $method, string $type): bool
     {
-        if (! $params = methodParams($class, $method)) return false;
+        if (! $params = classMethodParams($class, $method)) return false;
 
         foreach ($params as $param) {
             if ($type === $param["type"]) return true;
@@ -741,7 +776,7 @@ if (! function_exists('hasParameterByType')) {
 if (! function_exists('hasParameterByName')) {
     function hasParameterByName(string $class, string $method, string $name): bool
     {
-        $params = methodParams($class, $method);
+        $params = classMethodParams($class, $method);
     
         foreach ($params as $param) {
             if ($name === $param["name"]) return true;
