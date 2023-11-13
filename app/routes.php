@@ -9,12 +9,17 @@ use App\Controllers\{
     HomeController,
     NotesController
 };
+use Core\Contracts\Request;
 
 Route::GET("/", [HomeController::class])->name("index");
 Route::GET("home", [HomeController::class])->name("home");
 Route::GET("about", [AboutController::class])->name("about");
 Route::GET("contact", [ContactController::class])->name("contact");
 Route::GET("policy", fn () => view('policy', ["heading" => __("Policy")]))->name("policy");
+Route::GET("welcome/{name}", fn (Request $request, string $name) => view('welcome', [
+    "heading" => __("Welcome"),
+    "name" => $name,
+]))->name("welcome");
 
 Route::group(['middleware' => ['guest']], function () {
     /*** AUTH ***/
