@@ -140,7 +140,7 @@ abstract class Makeable
 
         $info = $this->type;
 
-        logging(sprintf('%s [%s] created successfully.', $info, $path), withDate: false);
+        logging(sprintf('%s [%s] created successfully.', $info, $name), withDate: false);
     }
 
     /**
