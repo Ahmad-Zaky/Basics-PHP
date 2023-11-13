@@ -1018,3 +1018,16 @@ if (! function_exists('pluralize')) {
             :  $pluralizer->pluralize($word);
     }
 }
+
+/**
+ * Get the date prefix for the migration.
+ *
+ * @return string
+ */
+if (! function_exists('getDatePrefix')) {
+    function getDatePrefix(string $format = 'Y_m_d_His'): string
+    {
+        return date($format);
+    }
+}
+

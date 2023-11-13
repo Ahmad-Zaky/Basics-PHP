@@ -4,7 +4,7 @@ namespace App\Migrations;
 
 use Core\MigrationManager;
 
-class m_0002_create_notes_table extends MigrationManager
+class m_2023_11_13_084926_create_notes_table extends MigrationManager
 {
     public function up() 
     {

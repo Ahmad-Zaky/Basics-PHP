@@ -4,7 +4,7 @@ namespace App\Migrations;
 
 use Core\MigrationManager;
 
-class m_0001_create_users_table extends MigrationManager
+class m_2023_11_13_084925_create_users_table extends MigrationManager
 {
     public function up() 
     {
